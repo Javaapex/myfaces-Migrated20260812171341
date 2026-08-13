@@ -1,0 +1,146 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.myfaces.renderkit.html.base;
+
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.UIGraphic;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
+
+import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
+
+public class HtmlImageRendererBase<T extends UIGraphic> extends HtmlRenderer<T>
+{
+    private static final Logger log = Logger.getLogger(HtmlImageRendererBase.class.getName());
+    
+    @Override
+    public void decode(FacesContext context, T component)
+    {
+        super.decode(context, component);
+        
+        ClientBehaviorRendererUtils.decodeClientBehaviors(context, component);
+    }
+
+    @Override
+    public void encodeEnd(FacesContext facesContext, T component) throws IOException
+    {
+        RendererUtils.checkParamValidity(facesContext, component, UIGraphic.class);
+
+        ResponseWriter writer = facesContext.getResponseWriter();
+        
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(component);
+        if (behaviors != null && !behaviors.isEmpty())
+        {
+            ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
+        }
+        
+        writer.startElement(HTML.IMG_ELEM, component);
+
+        if (component instanceof ClientBehaviorHolder && !behaviors.isEmpty())
+        {
+            HtmlRendererUtils.writeIdAndName(writer, component, facesContext);
+        }
+        else
+        {
+            HtmlRendererUtils.writeIdIfNecessary(writer, component, facesContext);
+        }
+
+        final String url = RendererUtils.getIconSrc(facesContext, component, ComponentAttrs.URL_ATTR);
+        if (url != null)
+        {
+            writer.writeURIAttribute(HTML.SRC_ATTR, url,ComponentAttrs.VALUE_ATTR);
+        }
+        else
+        {
+            Level level = facesContext.isProjectStage(ProjectStage.Production)
+                    ? Level.FINE
+                    : Level.WARNING;
+            if (log.isLoggable(level))
+            {
+                log.log(level, "Component UIGraphic " + component.getClientId(facesContext)
+                        + " has no attribute url, value, name or attribute resolves to null. Path to component " 
+                        + ComponentUtils.getPathToComponent(component));
+            }
+        }
+
+        /* 
+         * Warn the user if the ALT attribute is missing.
+         */                
+        if (component.getAttributes().get(HTML.ALT_ATTR) == null)
+        {
+            Level level = facesContext.isProjectStage(ProjectStage.Production)
+                    ? Level.FINE
+                    : Level.WARNING;
+            if (log.isLoggable(level))
+            {
+                log.log(level, "Component UIGraphic " + component.getClientId(facesContext)
+                        + " has no attribute alt or attribute resolves to null. Path to component " 
+                        + ComponentUtils.getPathToComponent(component));
+            }
+        }
+
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, component);
+
+        if (behaviors != null)
+        {
+            renderEventHandlers(facesContext, writer, component, behaviors, commonPropertiesMarked);
+        }
+
+        if (commonPropertiesMarked != null)
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, component, HTML.IMG_ATTRIBUTES);
+            if (behaviors != null)
+            {
+                CommonHtmlAttributesUtil.renderCommonPassthroughPropertiesWithoutEvents(
+                        writer, commonPropertiesMarked, component);
+            }
+            else
+            {
+                CommonHtmlAttributesUtil.renderCommonPassthroughProperties(
+                        writer, commonPropertiesMarked, component);
+            }
+        }
+        else
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, component,
+                    behaviors != null
+                        ? HTML.IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS
+                        : HTML.IMG_PASSTHROUGH_ATTRIBUTES);
+        }
+
+        writer.endElement(HTML.IMG_ELEM);
+
+    }
+
+}

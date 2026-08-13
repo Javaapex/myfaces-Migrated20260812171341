@@ -1,0 +1,229 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package jakarta.faces.convert;
+
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class DateTimeConverterTest extends AbstractFacesTestCase
+{
+    private DateTimeConverter mock;
+
+    @Override
+    @BeforeEach
+    public void setUp() throws Exception
+    {
+        super.setUp();
+
+        mock = new DateTimeConverter();
+        mock.setTimeZone(TimeZone.getDefault());
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.GERMANY);
+
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception
+    {
+        super.tearDown();
+
+        mock = null;
+    }
+
+    /*
+     * Test method for 'jakarta.faces.component.UIComponentBase.getAsObject()'
+     */
+    @Test
+    public void testGetAsObject()
+    {
+
+        UIInput input = new UIInput();
+
+        mock.setPattern("MM/dd/yyyy");
+
+        // should trow a ConverterException
+        try
+        {
+            mock.getAsObject(FacesContext.getCurrentInstance(), input, "15/15/15");
+
+            Assertions.assertTrue(false, "this date should not be parsable - and it is, so this is wrong.");
+        }
+        catch (ConverterException _) {}
+
+        // should not trow a ConverterException
+        try
+        {
+            Date date = (Date) mock.getAsObject(FacesContext.getCurrentInstance(), input, "12/01/01");
+
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+            format.setTimeZone(TimeZone.getDefault());
+
+            String str = format.format(date);
+
+            Assertions.assertEquals("12/01/01", str);
+
+            format = new SimpleDateFormat("MM/dd/yyyy");
+            format.setTimeZone(TimeZone.getDefault());
+
+            str = format.format(date);
+
+            Assertions.assertEquals("12/01/0001", str);
+        }
+        catch (ConverterException e)
+        {
+            Assertions.assertTrue(false, "this date should not be parsable - and it is, so this is wrong.");
+        }
+    }
+
+    @Test
+    public void testLocalDateParsesRegularSpacesWhenLocaleUsesFixedWidthWhitespace()
+    {
+        UIInput input = new UIInput();
+        mock.setType("localDate");
+        mock.setLocale(Locale.FRANCE);
+        mock.setDateStyle("short");
+        LocalDate expected = LocalDate.of(2024, 6, 15);
+        String formatted = mock.getAsString(facesContext, input, expected);
+        String withAsciiSpaces = formatted.replace('\u202f', ' ').replace('\u00a0', ' ');
+        Object parsed = mock.getAsObject(facesContext, input, withAsciiSpaces);
+        Assertions.assertEquals(expected, parsed);
+    }
+
+    @Test
+    public void testLocalTimeStripsZeroWidthWhitespaceFromInput()
+    {
+        UIInput input = new UIInput();
+        mock.setType("localTime");
+        mock.setLocale(Locale.GERMANY);
+        mock.setTimeStyle("short");
+        LocalTime expected = LocalTime.of(14, 30);
+        String formatted = mock.getAsString(facesContext, input, expected);
+        Assertions.assertFalse(formatted.isEmpty());
+        String withZw = formatted.charAt(0) + "\u200b" + formatted.substring(1);
+        Object parsed = mock.getAsObject(facesContext, input, withZw);
+        Assertions.assertEquals(expected, parsed);
+    }
+
+    @Test
+    public void testYearIsoRoundTrip()
+    {
+        UIInput input = new UIInput();
+        mock.setType("year");
+        Year expected = Year.of(2011);
+        Assertions.assertEquals("2011", mock.getAsString(facesContext, input, expected));
+        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011"));
+    }
+
+    @Test
+    public void testYearMonthIsoRoundTrip()
+    {
+        UIInput input = new UIInput();
+        mock.setType("yearMonth");
+        YearMonth expected = YearMonth.of(2011, 12);
+        Assertions.assertEquals("2011-12", mock.getAsString(facesContext, input, expected));
+        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12"));
+    }
+
+    @Test
+    public void testMonthDayIsoRoundTrip()
+    {
+        UIInput input = new UIInput();
+        mock.setType("monthDay");
+        MonthDay expected = MonthDay.of(12, 3);
+        Assertions.assertEquals("--12-03", mock.getAsString(facesContext, input, expected));
+        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "--12-03"));
+    }
+
+    @Test
+    public void testMonthDayAcceptsLeapDay()
+    {
+        UIInput input = new UIInput();
+        mock.setType("monthDay");
+        MonthDay leapDay = MonthDay.of(2, 29);
+        Assertions.assertEquals("--02-29", mock.getAsString(facesContext, input, leapDay));
+        Assertions.assertEquals(leapDay, mock.getAsObject(facesContext, input, "--02-29"));
+    }
+
+    @Test
+    public void testInstantIsoRoundTrip()
+    {
+        UIInput input = new UIInput();
+        mock.setType("instant");
+        Instant expected = Instant.parse("2011-12-03T10:15:30Z");
+        Assertions.assertEquals("2011-12-03T10:15:30Z", mock.getAsString(facesContext, input, expected));
+        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12-03T10:15:30Z"));
+    }
+
+    @Test
+    public void testInstantWithCustomPatternUsesTimeZone()
+    {
+        UIInput input = new UIInput();
+        mock.setType("instant");
+        mock.setPattern("yyyy-MM-dd HH:mm:ss");
+        mock.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Instant expected = Instant.parse("2011-12-03T10:15:30Z");
+        Assertions.assertEquals("2011-12-03 10:15:30", mock.getAsString(facesContext, input, expected));
+        Assertions.assertEquals(expected, mock.getAsObject(facesContext, input, "2011-12-03 10:15:30"));
+    }
+
+    @Test
+    public void testYearWithExplicitPattern()
+    {
+        UIInput input = new UIInput();
+        mock.setType("year");
+        mock.setPattern("yy");
+        Assertions.assertEquals("11", mock.getAsString(facesContext, input, Year.of(2011)));
+    }
+
+    @Test
+    public void testYearRejectsUnparseableInput()
+    {
+        UIInput input = new UIInput();
+        mock.setType("year");
+        Assertions.assertThrows(ConverterException.class,
+                () -> mock.getAsObject(facesContext, input, "not-a-year"));
+    }
+
+    @Test
+    public void testMonthDayRejectsInvalidInput()
+    {
+        UIInput input = new UIInput();
+        mock.setType("monthDay");
+        Assertions.assertThrows(ConverterException.class,
+                () -> mock.getAsObject(facesContext, input, "--13-40"));
+    }
+}

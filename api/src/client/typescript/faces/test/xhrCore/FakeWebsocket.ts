@@ -1,0 +1,55 @@
+/*! Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+export class FakeWebsocket {
+
+    onopen: Function = () => {}
+    onmessage: Function = () => {}
+    onclose: Function = () => {}
+    onerror: Function = () => {}
+    readyState = 0; // 0=CONNECTING, 1=OPEN, 3=CLOSED
+
+    constructor() {
+        setTimeout(() => {
+            if (this.readyState !== 0) return;
+            this.readyState = 1;
+            this.onopen();
+        }, 10);
+    }
+
+    send() {}
+
+    /** Simulate a message arriving from the server. */
+    _respond(response: any) {
+        this.onmessage(response);
+    }
+
+    /** Simulate a WebSocket error event. */
+    _error(event: any) {
+        this.onerror(event);
+    }
+
+    /** Simulate a server-initiated close with a specific CloseEvent. */
+    _close(event: any = {}) {
+        this.readyState = 3;
+        this.onclose(event);
+    }
+
+    /** Socket-initiated close (called by Socket.close()). */
+    close() {
+        this.readyState = 3;
+        this.onclose({});
+    }
+}

@@ -1,0 +1,208 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.myfaces.renderkit.html.base;
+
+import org.apache.myfaces.renderkit.html.util.HtmlRendererUtils;
+import org.apache.myfaces.renderkit.html.util.ClientBehaviorRendererUtils;
+import org.apache.myfaces.renderkit.html.util.CommonHtmlAttributesUtil;
+import org.apache.myfaces.renderkit.RendererUtils;
+import org.apache.myfaces.renderkit.html.util.ResourceUtils;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIOutput;
+import jakarta.faces.component.behavior.ClientBehavior;
+import jakarta.faces.component.behavior.ClientBehaviorHolder;
+import jakarta.faces.component.html.HtmlInputSecret;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.convert.ConverterException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import org.apache.myfaces.core.api.shared.AttributeUtils;
+import org.apache.myfaces.renderkit.html.util.HTML;
+import org.apache.myfaces.renderkit.html.util.ComponentAttrs;
+
+/**
+ * see Spec.1.0 EA - Faces.7.6.4 Renderer Types for UIInput Components
+ */
+public class HtmlSecretRendererBase<T extends UIInput> extends HtmlRenderer<T>
+{
+    private static final String AUTOCOMPLETE_VALUE_OFF = "off";
+
+    @Override
+    public void encodeBegin(FacesContext facesContext, T uiComponent) throws IOException
+    {
+      RendererUtils.checkParamValidity(facesContext, uiComponent, UIInput.class);
+
+      ResponseWriter writer = facesContext.getResponseWriter();
+      
+      Map<String, List<ClientBehavior>> behaviors = null;
+      if (uiComponent instanceof ClientBehaviorHolder holder)
+      {
+          behaviors = holder.getClientBehaviors();
+          if (!behaviors.isEmpty())
+          {
+              ResourceUtils.renderDefaultJsfJsInlineIfNecessary(facesContext, writer);
+          }
+      }
+      //allow subclasses to render custom attributes by separating rendering begin and end
+      renderInputBegin(facesContext, uiComponent);
+    }
+
+    @Override
+    public void encodeEnd(FacesContext facesContext, T uiComponent)
+            throws IOException
+    {
+        renderInputEnd(facesContext, uiComponent);
+    }
+
+
+    //Subclasses can set the value of an attribute before, or can render a custom attribute after calling this method
+    protected void renderInputBegin(FacesContext facesContext, T uiComponent) throws IOException
+    {
+        ResponseWriter writer = facesContext.getResponseWriter();
+        
+        writer.startElement(HTML.INPUT_ELEM, uiComponent);
+        writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_PASSWORD, null);
+
+        if (uiComponent instanceof ClientBehaviorHolder holder
+                && !holder.getClientBehaviors().isEmpty())
+        {
+            writer.writeAttribute(HTML.ID_ATTR, uiComponent.getClientId(facesContext), null);
+        }
+        else
+        {
+            HtmlRendererUtils.writeIdIfNecessary(writer, uiComponent, facesContext);
+        }
+        writer.writeAttribute(HTML.NAME_ATTR, uiComponent.getClientId(facesContext), null);
+
+        boolean isRedisplay;
+        if (uiComponent instanceof HtmlInputSecret secret)
+        {
+            isRedisplay = secret.isRedisplay();
+        }
+        else
+        {
+            isRedisplay = AttributeUtils.getBooleanAttribute(uiComponent, ComponentAttrs.REDISPLAY_ATTR, false);
+        }
+        if (isRedisplay)
+        {
+            String strValue = RendererUtils.getStringValue(facesContext, uiComponent);
+            writer.writeAttribute(HTML.VALUE_ATTR, strValue, ComponentAttrs.VALUE_ATTR);
+        }
+
+        Long commonPropertiesMarked = getCommonPropertiesMarked(facesContext, uiComponent);
+        Map<String, List<ClientBehavior>> behaviors = getClientBehaviors(uiComponent);
+
+        if (behaviors != null)
+        {
+            renderFieldEventHandlers(facesContext, writer, uiComponent, behaviors, commonPropertiesMarked);
+        }
+
+        if (commonPropertiesMarked != null)
+        {
+            if (behaviors != null)
+            {
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabledAndEvents(
+                        writer, commonPropertiesMarked, uiComponent);
+            }
+            else
+            {
+                CommonHtmlAttributesUtil.renderInputPassthroughPropertiesWithoutDisabled(
+                        writer, commonPropertiesMarked, uiComponent);
+            }
+        }
+        else
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, uiComponent,
+                    behaviors != null
+                        ? HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS
+                        : HTML.INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED);
+        }
+
+        if (isDisabled(facesContext, uiComponent))
+        {
+            writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
+        }
+
+        if (isAutocompleteOff(facesContext, uiComponent))
+        {
+            writer.writeAttribute(HTML.AUTOCOMPLETE_ATTR, AUTOCOMPLETE_VALUE_OFF, HTML.AUTOCOMPLETE_ATTR);
+        }
+    }
+
+    protected void renderInputEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
+    {
+        ResponseWriter writer = facesContext.getResponseWriter(); 
+
+        writer.endElement(HTML.INPUT_ELEM);
+    }
+
+    protected boolean isDisabled(FacesContext facesContext, UIComponent uiComponent)
+    {
+        if (uiComponent instanceof HtmlInputSecret secret)
+        {
+            return secret.isDisabled();
+        }
+
+        return AttributeUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
+    }
+
+    /**
+     * If autocomplete is "on" or not set, do not render it
+     */
+    protected boolean isAutocompleteOff(FacesContext facesContext, UIComponent component)
+    {
+        if (component instanceof HtmlInputSecret secret)
+        {
+            String autocomplete = secret.getAutocomplete();
+            if (autocomplete != null)
+            {
+                return autocomplete.equals(AUTOCOMPLETE_VALUE_OFF);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void decode(FacesContext facesContext, T component)
+    {
+        RendererUtils.checkParamValidity(facesContext, component, UIInput.class);
+
+        HtmlRendererUtils.decodeUIInput(facesContext, component);
+        if (component instanceof ClientBehaviorHolder && !isDisabled(facesContext, component))
+        {
+            ClientBehaviorRendererUtils.decodeClientBehaviors(facesContext, component);
+        }
+    }
+
+    @Override
+    public Object getConvertedValue(FacesContext facesContext, T uiComponent, Object submittedValue)
+        throws ConverterException
+    {
+        RendererUtils.checkParamValidity(facesContext, uiComponent, UIOutput.class);
+        return RendererUtils.getConvertedUIOutputValue(facesContext,
+                                                       (UIOutput)uiComponent,
+                                                       submittedValue);
+    }
+
+}

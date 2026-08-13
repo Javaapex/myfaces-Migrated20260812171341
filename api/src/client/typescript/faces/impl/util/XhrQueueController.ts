@@ -1,0 +1,120 @@
+/*! Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {IAsyncRunnable} from "./AsyncRunnable";
+import {ExtLang} from "./Lang";
+const debounce = ExtLang.debounce;
+
+/**
+ * A simple XHR queue controller
+ * following the async op -> next pattern
+ * Faces enforces for the XHR handling
+ */
+export class XhrQueueController<T extends IAsyncRunnable<any>> {
+    queue: IAsyncRunnable<any>[] = [];
+    taskRunning = false;
+
+    // Each instance needs its own debounce key: a shared key would cause enqueues
+    // on separate instances to cancel each other's debounce window.
+    private static instanceCount = 0;
+    private readonly debounceKey: string;
+
+    constructor() {
+        this.debounceKey = `xhrQueue_${XhrQueueController.instanceCount++}`;
+    }
+
+    /**
+     * executes or enqueues an element
+     * @param runnable the runnable (request) to be enqueued
+     * @param timeOut timeout if > 0 which defers the execution
+     * until the debounce window for the timeout is closed.
+     */
+    enqueue(runnable: T, timeOut: number = 0) {
+        debounce(this.debounceKey, () => {
+            const requestHandler = this.enrichRunnable(runnable);
+            if (!this.taskRunning) {
+                this.signalTaskRunning();
+                requestHandler.start();
+            } else {
+                this.queue.push(requestHandler);
+            }
+        }, timeOut);
+    }
+
+    /**
+     * trigger the next element in the queue
+     * to be started!
+     */
+    next() {
+        this.updateTaskRunning();
+        const next = this.queue.shift();
+        next?.start();
+    }
+
+    /**
+     * clears and resets the queue
+     */
+    clear() {
+        this.queue.length = 0;
+        this.updateTaskRunning();
+    }
+
+    /**
+     * true if queue is empty
+     */
+    get isEmpty(): boolean {
+        return !this.queue.length;
+    }
+
+    /**
+     * Enriches the incoming async asyncRunnable
+     * with the error and next handling
+     * (aka: asyncRunnable is done -> next
+     *                   error -> clear queue
+     * @param asyncRunnable the async runnable which needs enrichment
+     * @private
+     */
+    private enrichRunnable(asyncRunnable: T) {
+        /**
+         * we can use the Promise pattern asyncrunnable uses
+         * to trigger queue control callbacks of next element
+         * and clear the queue (theoretically this
+         * would work with any promise)
+         */
+        return asyncRunnable
+            .then(() => this.next())
+            .catch(() => this.clear());
+    }
+
+
+    /**
+     * alerts the queue that a task is running
+     *
+     * @private
+     */
+    private signalTaskRunning() {
+        this.taskRunning = true;
+    }
+
+    /**
+     * updates the task running status according to the current queue
+     * @private
+     */
+    private updateTaskRunning() {
+        this.taskRunning = !this.isEmpty;
+    }
+
+}

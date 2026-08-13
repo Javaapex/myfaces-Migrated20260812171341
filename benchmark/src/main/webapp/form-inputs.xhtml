@@ -1,0 +1,49 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+    <title>form-inputs</title>
+</h:head>
+<h:body>
+    <h:messages/>
+    <h:form id="form">
+        <h:inputText id="name" value="#{formBean.name}" required="true">
+            <f:validateLength minimum="1" maximum="100"/>
+        </h:inputText>
+        <h:inputText id="quantity" value="#{formBean.quantity}">
+            <f:convertNumber integerOnly="true"/>
+        </h:inputText>
+        <h:inputText id="price" value="#{formBean.price}">
+            <f:convertNumber/>
+        </h:inputText>
+
+        <ui:repeat value="#{formBean.fields}" var="f" varStatus="s">
+            <h:inputText value="#{formBean.fields[s.index]}">
+                <f:validateLength maximum="100"/>
+            </h:inputText>
+        </ui:repeat>
+
+        <h:commandButton id="submit" value="Submit" action="#{formBean.submit}"/>
+    </h:form>
+</h:body>
+</html>

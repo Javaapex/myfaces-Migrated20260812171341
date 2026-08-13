@@ -1,0 +1,3145 @@
+{
+  "jobId": "default",
+  "status": "ready",
+  "applicationProfile": {
+    "applicationType": "JSP_UI",
+    "frameworkSignals": {
+      "springBoot": false,
+      "restController": false,
+      "mvcController": false,
+      "uiFramework": "JSP",
+      "hasUi": true,
+      "legacyEnterprise": true,
+      "openApiSpec": null,
+      "springBootPackage": ""
+    },
+    "recommendedFunctionalTools": [
+      "SELENIUM",
+      "PLAYWRIGHT"
+    ],
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "POST",
+        "path": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "GET",
+        "path": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet"
+      },
+      {
+        "method": "POST",
+        "path": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet"
+      },
+      {
+        "method": "GET",
+        "path": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "POST",
+        "path": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "GET",
+        "path": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "POST",
+        "path": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "GET",
+        "path": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "POST",
+        "path": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet"
+      },
+      {
+        "method": "GET",
+        "path": "/perf-stats",
+        "source_file": "PerfStatsServlet.java",
+        "controller": "PerfStatsServlet",
+        "route_type": "servlet"
+      }
+    ],
+    "uiRoutes": [
+      {
+        "route": "/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/basictemplate",
+        "source_file": "basicTemplate.xhtml",
+        "page_type": "template"
+      },
+      {
+        "route": "/foo.xhtml",
+        "source_file": "foo.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/foreach-readonly.xhtml",
+        "source_file": "foreach-readonly.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/form-inputs.xhtml",
+        "source_file": "form-inputs.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/index.xhtml",
+        "source_file": "index.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/myprotectedview.xhtml",
+        "source_file": "myProtectedView.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/nested-readonly.xhtml",
+        "source_file": "nested-readonly.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/plainhtml.xhtml",
+        "source_file": "plainHtml.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/repeat-readonly.xhtml",
+        "source_file": "repeat-readonly.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/some-folder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/somefolder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/table-readonly.xhtml",
+        "source_file": "table-readonly.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/test1-protocol.xhtml",
+        "source_file": "test1-protocol.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/test2-viewbody.xhtml",
+        "source_file": "test2-viewbody.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/test3-chain.xhtml",
+        "source_file": "test3-chain.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/test4-tablebasic.xhtml",
+        "source_file": "test4-tablebasic.xhtml",
+        "page_type": "html"
+      },
+      {
+        "route": "/test5-viewbody-full-response.xhtml",
+        "source_file": "test5-viewbody-full-response.xhtml",
+        "page_type": "html"
+      }
+    ],
+    "runtime": {
+      "requiresServerStartup": true,
+      "defaultPort": 8080,
+      "allocatedPort": 61724,
+      "baseUrl": "http://127.0.0.1:61724"
+    },
+    "_existing_tests_for_validation": {
+      "SELENIUM": [
+        "impl/src/test/java/org/apache/myfaces/el/ResolverBuilderBaseTest.java",
+        "impl/src/test/java/org/apache/myfaces/flow/FlowBuilderTest.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/component/UIRepeatTest.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pool/UISimpleComponentA.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/test/component/MyUIPanel1.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/test/component/MyUIPanel2.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/test/component/MyUIPanel2Renderer.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/test/component/MyUIPanel3.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/composite/NotOverwriteRequiredComposite.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/composite/OverwriteRequiredComposite.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/composite/OverwriteRequiredCompositeBean.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/composite/OverwriteRequiredCompositeTest.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/DefineIncludeTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/ELExprTemplateTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/IncludeHandler4577TestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/IncludeParamTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/RemoveTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/RepeatTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/TemplateTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/TestUserTags.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/UITestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/template/CompositionTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/template/DecorateTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/template/IncludeTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/tag/ui/template/UserTagTestCase.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleCCVDL.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleCCVDL2.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleCCVDL3.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleCCVDL4.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleCCVDL5.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleCCVDL6.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleCCVDL7.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleComponentVDL.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleIncludeVDL.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIAddSimpleIncludeVDL2.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIDynamicFormComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIInputComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIRDComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIRecursiveComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UISelfRenderComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UISimpleComponent1.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UISimpleComponent2.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIStableComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UITableComponent.java",
+        "impl/src/test/java/org/apache/myfaces/view/facelets/pss/acid/component/UIToggleComponent.java",
+        "impl/src/test/java/org/apache/myfaces/renderkit/html/util/AjaxScriptBuilderTest.java",
+        "impl/src/test/java/jakarta/faces/component/AbstractUIComponentBaseTest.java",
+        "impl/src/test/java/jakarta/faces/component/AbstractUIComponentPropertyTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentAttributesTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentBaseFacesListenerTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentBaseGetChildrenTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentBaseGetClientIdTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentBaseProcessSaveRestoreStateTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentBaseTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentEncodeAllTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentEventListenerWrapperTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentFindComponentTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentInvokeOnComponentTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentMock.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentTestBase.java",
+        "impl/src/test/java/jakarta/faces/component/UIComponentValueExpressionTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIDataRowStateTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIDataTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIGraphicTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIInputTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIOutputPSSTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIRepeatBenchmark.java",
+        "impl/src/test/java/jakarta/faces/component/UISelectItemsTest.java",
+        "impl/src/test/java/jakarta/faces/component/UISelectManyTest.java",
+        "impl/src/test/java/jakarta/faces/component/UISelectOneTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIViewParameterTest.java",
+        "impl/src/test/java/jakarta/faces/component/UIViewRootTest.java",
+        "impl/src/main/java/org/apache/myfaces/el/DefaultELResolverBuilder.java",
+        "impl/src/main/java/org/apache/myfaces/el/ELResolverBuilder.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/DynamicComponentRefreshTransientBuildEvent.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/FaceletDynamicComponentRefreshTransientBuildEvent.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/PublishDynamicComponentRefreshTransientBuildCallback.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/compiler/AbstractUIHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/compiler/UIInstructionHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/compiler/UIInstructions.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/compiler/UILeaf.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/component/UIRepeat.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/faces/ComponentBuilderHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/ComponentRef.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/ComponentRefHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/CompositionHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/DebugPhaseListener.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/DecorateHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/DefineHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/IncludeHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/InsertHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/LegacyCompositionHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/LegacyDecorateHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/LegacyIncludeHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/LegacyParamHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/LegacyUILibrary.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/ParamHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/RepeatHandler.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/UIDebug.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/UILibrary.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/_Component.java",
+        "impl/src/main/java/org/apache/myfaces/view/facelets/tag/ui/_Fragment.java",
+        "impl/src/main/java/org/apache/myfaces/renderkit/html/util/AjaxScriptBuilder.java",
+        "impl/src/main/java/org/apache/myfaces/push/cdi/WebsocketChannelTokenBuilder.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/FlowBuilderImpl.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/FlowCallBuilderImpl.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/MethodCallBuilderImpl.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/NavigationCaseBuilderImpl.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/ReturnBuilderImpl.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/SwitchBuilderImpl.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/SwitchCaseBuilderImpl.java",
+        "impl/src/main/java/org/apache/myfaces/flow/builder/ViewBuilderImpl.java",
+        "extensions/quarkus/runtime/src/main/java/org/apache/myfaces/core/extensions/quarkus/runtime/spi/QuarkusELResolverBuilder.java",
+        "extensions/quarkus/deployment/src/main/java/org/apache/myfaces/core/extensions/quarkus/deployment/ManagedPropertyBuildStep.java",
+        "extensions/quarkus/deployment/src/main/java/org/apache/myfaces/core/extensions/quarkus/deployment/devui/MyFacesCoreDevUIProcessor.java",
+        "api/src/test/java/jakarta/faces/component/UIColumnTest.java",
+        "api/src/test/java/jakarta/faces/component/UICommandTest.java",
+        "api/src/test/java/jakarta/faces/component/UIDataTest.java",
+        "api/src/test/java/jakarta/faces/component/UIFormTest.java",
+        "api/src/test/java/jakarta/faces/component/UIGraphicTest.java",
+        "api/src/test/java/jakarta/faces/component/UIImportConstantsTest.java",
+        "api/src/test/java/jakarta/faces/component/UIInputTest.java",
+        "api/src/main/java/org/apache/myfaces/core/api/shared/lang/SharedStringBuilder.java",
+        "api/src/main/java/jakarta/faces/component/UIColumn.java",
+        "api/src/main/java/jakarta/faces/component/UICommand.java",
+        "api/src/main/java/jakarta/faces/component/UIComponent.java",
+        "api/src/main/java/jakarta/faces/component/UIComponentBase.java",
+        "api/src/main/java/jakarta/faces/component/UIData.java",
+        "api/src/main/java/jakarta/faces/component/UIForm.java",
+        "api/src/main/java/jakarta/faces/component/UIGraphic.java",
+        "api/src/main/java/jakarta/faces/component/UIImportConstants.java",
+        "api/src/main/java/jakarta/faces/component/UIInput.java",
+        "api/src/main/java/jakarta/faces/component/UINamingContainer.java",
+        "api/src/main/java/jakarta/faces/component/UIOutcomeTarget.java",
+        "api/src/main/java/jakarta/faces/component/UIOutput.java",
+        "api/src/main/java/jakarta/faces/component/UIPanel.java",
+        "api/src/main/java/jakarta/faces/component/UISelectBoolean.java",
+        "api/src/main/java/jakarta/faces/component/UISelectMany.java",
+        "api/src/main/java/jakarta/faces/component/UISelectOne.java",
+        "api/src/main/java/jakarta/faces/component/UIViewAction.java",
+        "api/src/main/java/jakarta/faces/component/UIViewParameter.java",
+        "api/src/main/java/jakarta/faces/component/UIViewRoot.java",
+        "api/src/main/java/jakarta/faces/component/_UIMessage.java",
+        "api/src/main/java/jakarta/faces/component/_UIMessages.java",
+        "api/src/main/java/jakarta/faces/component/_UIParameter.java",
+        "api/src/main/java/jakarta/faces/component/_UISelectItem.java",
+        "api/src/main/java/jakarta/faces/component/_UISelectItemGroup.java",
+        "api/src/main/java/jakarta/faces/component/_UISelectItemGroups.java",
+        "api/src/main/java/jakarta/faces/component/_UISelectItems.java",
+        "api/src/main/java/jakarta/faces/component/_UIWebsocket.java",
+        "api/src/main/java/jakarta/faces/convert/UUIDConverter.java",
+        "api/src/main/java/jakarta/faces/validator/RequiredValidator.java",
+        "api/src/main/java/jakarta/faces/flow/builder/FlowBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/FlowBuilderParameter.java",
+        "api/src/main/java/jakarta/faces/flow/builder/FlowCallBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/FlowDefinition.java",
+        "api/src/main/java/jakarta/faces/flow/builder/MethodCallBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/NavigationCaseBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/NodeBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/ReturnBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/SwitchBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/SwitchCaseBuilder.java",
+        "api/src/main/java/jakarta/faces/flow/builder/ViewBuilder.java"
+      ]
+    }
+  },
+  "testPlan": {
+    "strategy": "source_analyzed_functional_tests",
+    "planning": {
+      "mode": "deterministic_source_analysis",
+      "llmEnhanced": false,
+      "schemaVersion": "functional-test-plan.v3",
+      "endpointsDetected": 11,
+      "uiRoutesDetected": 18,
+      "pagesAnalyzed": 119,
+      "message": "Generated from deep source analysis: 11 API endpoint(s), 18 UI route(s), 119 page(s) analyzed for forms/fields/headings. Tests use actual form field names, page titles, and business flows.",
+      "llmProvider": "groq",
+      "llmMessage": "LLM returned no valid additional functional tests; deterministic plan retained."
+    },
+    "tests": [
+      {
+        "name": "Verify /bar.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/bar.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /bar.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/bar.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /bar.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/bar.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /bar.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/bar.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /basictemplate renders with title Facelets Template and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/basictemplate",
+        "source_file": "basicTemplate.xhtml",
+        "page_type": "template",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/basictemplate"
+          },
+          {
+            "type": "assert_title",
+            "title": "Facelets Template"
+          }
+        ]
+      },
+      {
+        "name": "Page /basictemplate renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/basictemplate",
+        "source_file": "basicTemplate.xhtml",
+        "page_type": "template",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/basictemplate"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "Facelets Template"
+          }
+        ]
+      },
+      {
+        "name": "Verify /basictemplate renders with title Facelets Template and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/basictemplate",
+        "source_file": "basicTemplate.xhtml",
+        "page_type": "template",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/basictemplate"
+          },
+          {
+            "type": "assert_title",
+            "title": "Facelets Template"
+          }
+        ]
+      },
+      {
+        "name": "Page /basictemplate renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/basictemplate",
+        "source_file": "basicTemplate.xhtml",
+        "page_type": "template",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/basictemplate"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "Facelets Template"
+          }
+        ]
+      },
+      {
+        "name": "Verify /foo.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/foo.xhtml",
+        "source_file": "foo.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /foo.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/foo.xhtml",
+        "source_file": "foo.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /foo.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/foo.xhtml",
+        "source_file": "foo.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /foo.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/foo.xhtml",
+        "source_file": "foo.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /foreach-readonly.xhtml renders with title foreach-readonly and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/foreach-readonly.xhtml",
+        "source_file": "foreach-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foreach-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "foreach-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /foreach-readonly.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/foreach-readonly.xhtml",
+        "source_file": "foreach-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foreach-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "foreach-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Verify /foreach-readonly.xhtml renders with title foreach-readonly and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/foreach-readonly.xhtml",
+        "source_file": "foreach-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foreach-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "foreach-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /foreach-readonly.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/foreach-readonly.xhtml",
+        "source_file": "foreach-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foreach-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "foreach-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Verify /form-inputs.xhtml renders with title form-inputs and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/form-inputs.xhtml",
+        "source_file": "form-inputs.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/form-inputs.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "form-inputs"
+          }
+        ]
+      },
+      {
+        "name": "Page /form-inputs.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/form-inputs.xhtml",
+        "source_file": "form-inputs.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/form-inputs.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "form-inputs"
+          }
+        ]
+      },
+      {
+        "name": "Verify /form-inputs.xhtml renders with title form-inputs and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/form-inputs.xhtml",
+        "source_file": "form-inputs.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/form-inputs.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "form-inputs"
+          }
+        ]
+      },
+      {
+        "name": "Page /form-inputs.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/form-inputs.xhtml",
+        "source_file": "form-inputs.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/form-inputs.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "form-inputs"
+          }
+        ]
+      },
+      {
+        "name": "Verify /index.xhtml renders with title benchmark and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/index.xhtml",
+        "source_file": "index.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/index.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "benchmark"
+          },
+          {
+            "type": "assert_visible",
+            "text": "MyFaces / Mojarra lifecycle benchmark"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "a[href*='table-readonly.xhtml']"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "a[href*='repeat-readonly.xhtml']"
+          }
+        ]
+      },
+      {
+        "name": "Page /index.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/index.xhtml",
+        "source_file": "index.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/index.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "benchmark"
+          },
+          {
+            "type": "assert_visible",
+            "text": "MyFaces / Mojarra lifecycle benchmark"
+          }
+        ]
+      },
+      {
+        "name": "Verify /index.xhtml renders with title benchmark and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/index.xhtml",
+        "source_file": "index.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/index.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "benchmark"
+          },
+          {
+            "type": "assert_visible",
+            "text": "MyFaces / Mojarra lifecycle benchmark"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "a[href*='table-readonly.xhtml']"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "a[href*='repeat-readonly.xhtml']"
+          }
+        ]
+      },
+      {
+        "name": "Page /index.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/index.xhtml",
+        "source_file": "index.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/index.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "benchmark"
+          },
+          {
+            "type": "assert_visible",
+            "text": "MyFaces / Mojarra lifecycle benchmark"
+          }
+        ]
+      },
+      {
+        "name": "Verify /myprotectedview.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/myprotectedview.xhtml",
+        "source_file": "myProtectedView.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/myprotectedview.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /myprotectedview.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/myprotectedview.xhtml",
+        "source_file": "myProtectedView.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/myprotectedview.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /myprotectedview.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/myprotectedview.xhtml",
+        "source_file": "myProtectedView.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/myprotectedview.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /myprotectedview.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/myprotectedview.xhtml",
+        "source_file": "myProtectedView.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/myprotectedview.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /nested-readonly.xhtml renders with title nested-readonly and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/nested-readonly.xhtml",
+        "source_file": "nested-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/nested-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "nested-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /nested-readonly.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/nested-readonly.xhtml",
+        "source_file": "nested-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/nested-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "nested-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Verify /nested-readonly.xhtml renders with title nested-readonly and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/nested-readonly.xhtml",
+        "source_file": "nested-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/nested-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "nested-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /nested-readonly.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/nested-readonly.xhtml",
+        "source_file": "nested-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/nested-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "nested-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Verify /plainhtml.xhtml renders with title minimal test html and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/plainhtml.xhtml",
+        "source_file": "plainHtml.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/plainhtml.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "minimal test html"
+          }
+        ]
+      },
+      {
+        "name": "Page /plainhtml.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/plainhtml.xhtml",
+        "source_file": "plainHtml.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/plainhtml.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "minimal test html"
+          }
+        ]
+      },
+      {
+        "name": "Verify /plainhtml.xhtml renders with title minimal test html and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/plainhtml.xhtml",
+        "source_file": "plainHtml.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/plainhtml.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "minimal test html"
+          }
+        ]
+      },
+      {
+        "name": "Page /plainhtml.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/plainhtml.xhtml",
+        "source_file": "plainHtml.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/plainhtml.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "minimal test html"
+          }
+        ]
+      },
+      {
+        "name": "Verify /repeat-readonly.xhtml renders with title repeat-readonly and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/repeat-readonly.xhtml",
+        "source_file": "repeat-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/repeat-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "repeat-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /repeat-readonly.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/repeat-readonly.xhtml",
+        "source_file": "repeat-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/repeat-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "repeat-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Verify /repeat-readonly.xhtml renders with title repeat-readonly and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/repeat-readonly.xhtml",
+        "source_file": "repeat-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/repeat-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "repeat-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /repeat-readonly.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/repeat-readonly.xhtml",
+        "source_file": "repeat-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/repeat-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "repeat-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Verify /some-folder/bar.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/some-folder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/some-folder/bar.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /some-folder/bar.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/some-folder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/some-folder/bar.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /some-folder/bar.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/some-folder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/some-folder/bar.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /some-folder/bar.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/some-folder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/some-folder/bar.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /somefolder/bar.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/somefolder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/somefolder/bar.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /somefolder/bar.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/somefolder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/somefolder/bar.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /somefolder/bar.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/somefolder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/somefolder/bar.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Page /somefolder/bar.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/somefolder/bar.xhtml",
+        "source_file": "bar.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/somefolder/bar.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /table-readonly.xhtml renders with title table-readonly and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/table-readonly.xhtml",
+        "source_file": "table-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/table-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "table-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /table-readonly.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/table-readonly.xhtml",
+        "source_file": "table-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/table-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "table-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Verify /table-readonly.xhtml renders with title table-readonly and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/table-readonly.xhtml",
+        "source_file": "table-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/table-readonly.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "table-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Page /table-readonly.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/table-readonly.xhtml",
+        "source_file": "table-readonly.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/table-readonly.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "table-readonly"
+          }
+        ]
+      },
+      {
+        "name": "Submit form on /test1-protocol.xhtml to boog.html and verify result",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test1-protocol.xhtml",
+        "source_file": "test1-protocol.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test1-protocol.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Protocol Test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "protocol testcase1"
+          },
+          {
+            "type": "click",
+            "locator": "#form1 button, #form1 input[type=submit]"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "500"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Exception"
+          }
+        ]
+      },
+      {
+        "name": "Page /test1-protocol.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test1-protocol.xhtml",
+        "source_file": "test1-protocol.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test1-protocol.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Protocol Test"
+          }
+        ]
+      },
+      {
+        "name": "Submit form on /test1-protocol.xhtml to boog.html and verify result",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test1-protocol.xhtml",
+        "source_file": "test1-protocol.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test1-protocol.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Protocol Test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "protocol testcase1"
+          },
+          {
+            "type": "click",
+            "locator": "#form1 button, #form1 input[type=submit]"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "500"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Exception"
+          }
+        ]
+      },
+      {
+        "name": "Page /test1-protocol.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test1-protocol.xhtml",
+        "source_file": "test1-protocol.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test1-protocol.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Protocol Test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /test2-viewbody.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test2-viewbody.xhtml",
+        "source_file": "test2-viewbody.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test2-viewbody.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Viewbody Test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "After triggering this test the entire page should be replaced by the test result"
+          }
+        ]
+      },
+      {
+        "name": "Page /test2-viewbody.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test2-viewbody.xhtml",
+        "source_file": "test2-viewbody.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test2-viewbody.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Viewbody Test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /test2-viewbody.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test2-viewbody.xhtml",
+        "source_file": "test2-viewbody.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test2-viewbody.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Viewbody Test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "After triggering this test the entire page should be replaced by the test result"
+          }
+        ]
+      },
+      {
+        "name": "Page /test2-viewbody.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test2-viewbody.xhtml",
+        "source_file": "test2-viewbody.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test2-viewbody.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Viewbody Test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /test3-chain.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test3-chain.xhtml",
+        "source_file": "test3-chain.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test3-chain.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Chain Test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "This test case tests the faces.util.chain function"
+          }
+        ]
+      },
+      {
+        "name": "Page /test3-chain.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test3-chain.xhtml",
+        "source_file": "test3-chain.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test3-chain.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Chain Test"
+          }
+        ]
+      },
+      {
+        "name": "Verify /test3-chain.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test3-chain.xhtml",
+        "source_file": "test3-chain.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test3-chain.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Chain Test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "This test case tests the faces.util.chain function"
+          }
+        ]
+      },
+      {
+        "name": "Page /test3-chain.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test3-chain.xhtml",
+        "source_file": "test3-chain.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test3-chain.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Chain Test"
+          }
+        ]
+      },
+      {
+        "name": "Submit form on /test4-tablebasic.xhtml to boog.html and verify result",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test4-tablebasic.xhtml",
+        "source_file": "test4-tablebasic.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test4-tablebasic.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Table Tests"
+          },
+          {
+            "type": "click",
+            "locator": "#form2 button, #form2 input[type=submit]"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "500"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Exception"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "table"
+          }
+        ]
+      },
+      {
+        "name": "Page /test4-tablebasic.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test4-tablebasic.xhtml",
+        "source_file": "test4-tablebasic.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test4-tablebasic.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Table Tests"
+          }
+        ]
+      },
+      {
+        "name": "Submit form on /test4-tablebasic.xhtml to boog.html and verify result",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test4-tablebasic.xhtml",
+        "source_file": "test4-tablebasic.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test4-tablebasic.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Table Tests"
+          },
+          {
+            "type": "click",
+            "locator": "#form2 button, #form2 input[type=submit]"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "500"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Exception"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "table"
+          }
+        ]
+      },
+      {
+        "name": "Page /test4-tablebasic.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test4-tablebasic.xhtml",
+        "source_file": "test4-tablebasic.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test4-tablebasic.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "Table Tests"
+          }
+        ]
+      },
+      {
+        "name": "Verify /test5-viewbody-full-response.xhtml renders with title test and expected content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test5-viewbody-full-response.xhtml",
+        "source_file": "test5-viewbody-full-response.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test5-viewbody-full-response.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "View Body replacement in Full Page Response"
+          }
+        ]
+      },
+      {
+        "name": "Page /test5-viewbody-full-response.xhtml renders without errors",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/test5-viewbody-full-response.xhtml",
+        "source_file": "test5-viewbody-full-response.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test5-viewbody-full-response.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "View Body replacement in Full Page Response"
+          }
+        ]
+      },
+      {
+        "name": "Verify /test5-viewbody-full-response.xhtml renders with title test and expected content",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test5-viewbody-full-response.xhtml",
+        "source_file": "test5-viewbody-full-response.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test5-viewbody-full-response.xhtml"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "View Body replacement in Full Page Response"
+          }
+        ]
+      },
+      {
+        "name": "Page /test5-viewbody-full-response.xhtml renders without errors",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/test5-viewbody-full-response.xhtml",
+        "source_file": "test5-viewbody-full-response.xhtml",
+        "page_type": "html",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/test5-viewbody-full-response.xhtml"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "Internal Server Error"
+          },
+          {
+            "type": "assert_not_visible",
+            "text": "NullPointerException"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          },
+          {
+            "type": "assert_title",
+            "title": "test"
+          },
+          {
+            "type": "assert_visible",
+            "text": "View Body replacement in Full Page Response"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /*.xhtml responds with content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.xhtml"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /*.xhtml \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "Verify servlet /*.xhtml (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.xhtml"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /*.xhtml handles POST submission",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.xhtml"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /*.xhtml \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "POST /*.xhtml \u2014 handles empty body gracefully",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST"
+      },
+      {
+        "name": "POST /*.xhtml \u2014 edge case with invalid content type",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST_BAD_CONTENT_TYPE"
+      },
+      {
+        "name": "Verify servlet /*.xhtml (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/*.xhtml",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.xhtml"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify ResponseMockup22 at /*.mockup responds with content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.mockup"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /*.mockup \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "Verify servlet /*.mockup (ResponseMockup22) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.mockup"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify ResponseMockup22 at /*.mockup handles POST submission",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.mockup"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /*.mockup \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "POST /*.mockup \u2014 handles empty body gracefully",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "POST"
+      },
+      {
+        "name": "POST /*.mockup \u2014 edge case with invalid content type",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "POST_BAD_CONTENT_TYPE"
+      },
+      {
+        "name": "Verify servlet /*.mockup (ResponseMockup22) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/*.mockup",
+        "source_file": "web.xml",
+        "controller": "ResponseMockup22",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.mockup"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /*.jsf responds with content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.jsf"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /*.jsf \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "Verify servlet /*.jsf (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.jsf"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /*.jsf handles POST submission",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.jsf"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /*.jsf \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "POST /*.jsf \u2014 handles empty body gracefully",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST"
+      },
+      {
+        "name": "POST /*.jsf \u2014 edge case with invalid content type",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST_BAD_CONTENT_TYPE"
+      },
+      {
+        "name": "Verify servlet /*.jsf (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/*.jsf",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/*.jsf"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /faces responds with content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/faces"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /faces \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "Verify servlet /faces (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/faces"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /faces handles POST submission",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/faces"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /faces \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "POST /faces \u2014 handles empty body gracefully",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST"
+      },
+      {
+        "name": "POST /faces \u2014 edge case with invalid content type",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST_BAD_CONTENT_TYPE"
+      },
+      {
+        "name": "Verify servlet /faces (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/faces",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/faces"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /foo responds with content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /foo \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "Verify servlet /foo (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify FacesServlet at /foo handles POST submission",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /foo \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "POST /foo \u2014 handles empty body gracefully",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST"
+      },
+      {
+        "name": "POST /foo \u2014 edge case with invalid content type",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST_BAD_CONTENT_TYPE"
+      },
+      {
+        "name": "Verify servlet /foo (FacesServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/foo",
+        "source_file": "web.xml",
+        "controller": "FacesServlet",
+        "route_type": "servlet",
+        "method": "POST",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/foo"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "Verify PerfStatsServlet at /perf-stats responds with content",
+        "tool": "PLAYWRIGHT",
+        "type": "ui",
+        "route": "/perf-stats",
+        "source_file": "PerfStatsServlet.java",
+        "controller": "PerfStatsServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/perf-stats"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      },
+      {
+        "name": "GET /perf-stats \u2014 endpoint responds without server error",
+        "tool": "PLAYWRIGHT",
+        "type": "api",
+        "route": "/perf-stats",
+        "source_file": "PerfStatsServlet.java",
+        "controller": "PerfStatsServlet",
+        "route_type": "servlet",
+        "method": "GET"
+      },
+      {
+        "name": "Verify servlet /perf-stats (PerfStatsServlet) business logic",
+        "tool": "SELENIUM",
+        "type": "legacy-ui",
+        "route": "/perf-stats",
+        "source_file": "PerfStatsServlet.java",
+        "controller": "PerfStatsServlet",
+        "route_type": "servlet",
+        "method": "GET",
+        "actions": [
+          {
+            "type": "navigate",
+            "url": "/perf-stats"
+          },
+          {
+            "type": "assert_visible",
+            "locator": "body"
+          }
+        ]
+      }
+    ]
+  },
+  "generatedFiles": [
+    "playwright/functional.spec.ts",
+    "playwright/package.json",
+    "playwright/playwright.config.ts",
+    "selenium/src/test/java/GeneratedSeleniumFunctionalTest.java",
+    "selenium/pom.xml"
+  ],
+  "runtime": {
+    "status": "ready",
+    "executionMode": "external_validation",
+    "containerRequired": false,
+    "containerAvailable": false,
+    "containerBinary": null,
+    "appStartCommand": "java -jar target/*.jar --server.port=63313",
+    "runnerCommands": [
+      {
+        "tool": "PLAYWRIGHT",
+        "command": "docker run --rm -v C:\\migrations\\workspace_restores\\89556023-a1c4-44fc-b420-d5b3ebacb48d\\tests-20260812-131112-bf59c25b\\.functional_tests:/work -w /work/playwright mcr.microsoft.com/playwright npx playwright test --reporter=html,junit"
+      },
+      {
+        "tool": "SELENIUM",
+        "command": "docker run --rm -p 4444:4444 selenium/standalone-chrome"
+      }
+    ],
+    "baseUrl": "http://localhost:63313",
+    "containerBaseUrl": "http://host.docker.internal:63313",
+    "message": "External validation mode \u2014 the application will be built, started on a dynamic port, and real test runners will execute against the live app."
+  },
+  "execution": {
+    "status": "failed",
+    "message": "External validation (static_file_server server on http://127.0.0.1:61724): 47 tests run, 35 passed, 12 failed.",
+    "startup": {
+      "required": true,
+      "started": true,
+      "port": 61724,
+      "baseUrl": "http://127.0.0.1:61724",
+      "server_type": "static_file_server",
+      "serving_dir": "C:\\migrations\\migration_job_copies\\7a5e25539bc74471ab7371f7211faa9c-original\\benchmark\\src\\main\\webapp",
+      "proxied_api_prefixes": [],
+      "backend_proxy_target": null,
+      "message": "Static file server started on port 61724 serving benchmark\\src\\main\\webapp"
+    },
+    "runners": [
+      {
+        "tool": "SELENIUM",
+        "cmd": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/c",
+          "C:\\Users\\ST-Elamaran\\Downloads\\apache-maven-3.9.14-bin\\apache-maven-3.9.14\\bin\\mvn.CMD",
+          "test"
+        ],
+        "exit_code": 1,
+        "timed_out": false,
+        "duration_sec": 259.413,
+        "output": "40 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:40 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:50:45 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:45 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:50:50 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:50 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:50:56 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:56 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:01 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:01 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:06 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:06 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:10 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:10 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:15 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:15 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:19 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:19 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:23 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:23 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:27 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:27 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:31 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:31 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:35 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:35 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:39 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:39 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:44 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:44 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:48 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:48 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:52 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:52 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:56 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:56 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.",
+        "output_tail": "omiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.",
+        "tests_run": 47,
+        "tests_passed": 35,
+        "tests_failed": 12,
+        "executed": true,
+        "status": "failed",
+        "report_available": true,
+        "report_tool": "allure",
+        "report_url": "/allure-report"
+      },
+      {
+        "tool": "PLAYWRIGHT",
+        "cmd": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/c",
+          "C:\\Program Files\\nodejs\\npx.CMD",
+          "playwright",
+          "test",
+          "--reporter=html,junit",
+          "--browser=chromium"
+        ],
+        "exit_code": 1,
+        "timed_out": false,
+        "duration_sec": 7.596,
+        "output": "<testsuites id=\"\" name=\"\" tests=\"0\" failures=\"0\" skipped=\"0\" errors=\"0\" time=\"0.5741970000000001\">\n</testsuites>\n\nTo open last HTML report run:\n\u001b[36m\u001b[39m\n\u001b[36m  npx playwright show-report\u001b[39m\n\u001b[36m\u001b[39m",
+        "output_tail": "<testsuites id=\"\" name=\"\" tests=\"0\" failures=\"0\" skipped=\"0\" errors=\"0\" time=\"0.5741970000000001\">\n</testsuites>\n\nTo open last HTML report run:\n\u001b[36m\u001b[39m\n\u001b[36m  npx playwright show-report\u001b[39m\n\u001b[36m\u001b[39m",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "executed": true,
+        "status": "failed",
+        "report_available": true,
+        "report_tool": "playwright",
+        "report_index_path": "C:\\migrations\\workspace_restores\\89556023-a1c4-44fc-b420-d5b3ebacb48d\\tests-20260812-131112-bf59c25b\\.functional_tests\\playwright\\playwright-report\\index.html"
+      },
+      {
+        "tool": "SELENIUM_EXISTING",
+        "cmd": [
+          "C:\\Users\\ST-Elamaran\\Downloads\\apache-maven-3.9.14-bin\\apache-maven-3.9.14\\bin\\mvn.CMD",
+          "-Dtest=ResolverBuilderBaseTest,FlowBuilderTest,UIRepeatTest,OverwriteRequiredCompositeTest,DefineIncludeTestCase,ELExprTemplateTestCase,IncludeHandler4577TestCase,IncludeParamTestCase,RemoveTestCase,RepeatTestCase,TemplateTestCase,TestUserTags,UITestCase,CompositionTestCase,DecorateTestCase,IncludeTestCase,UserTagTestCase,AjaxScriptBuilderTest,AbstractUIComponentBaseTest,AbstractUIComponentPropertyTest",
+          "test"
+        ],
+        "exit_code": 1,
+        "timed_out": false,
+        "duration_sec": 158.17,
+        "output": "\r\nINFO: processed class:jakarta.faces.view.facelets.DelegatingMetaTagHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletsAttachedObjectHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.BehaviorHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ComponentConfig\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ComponentHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.CompositeFaceletHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ConverterConfig\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ConverterHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.Facelet\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletCache\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletCache$MemberFactory\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletCacheFactory\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.el.ELContext\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletContext\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletException\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FacetHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.MetaRule\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.MetaRuleset\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.Metadata\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.MetadataTarget\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.Tag\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagAttribute\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagAttributeException\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagAttributes\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagDecorator\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagException\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagHandlerDelegate\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagHandlerDelegateFactory\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ValidatorConfig\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ValidatorHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.servlet.Servlet\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.webapp.FacesServlet\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.webapp.FacesServletFactory\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.AttributeUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.BeanValidationUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.CommonHtmlAttributes\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.CommonHtmlEvents\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ComponentUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ELContextDecorator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.EditableValueHolderState\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.EditableValueHolderState$ImmutableEditableValueHolderState\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ExternalSpecifications\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.validation.MessageInterpolator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.FacesMessageInterpolator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.MessageUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ParametrizableFacesMessage\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.SelectItemsIterator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.SelectItemsUtil\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.SharedRendererUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ValueReferenceResolver\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.VarUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.Assert\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.ClassUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.CollectionUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LocaleUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LocaleUtils$SyncAvoid\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjBooleanConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjByteConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjCharConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjFloatConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjShortConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.SharedStringBuilder",
+        "output_tail": "uilder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LocaleUtils$SyncAvoid\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjBooleanConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjByteConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjCharConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjFloatConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjShortConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.SharedStringBuilder",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "executed": true,
+        "status": "failed",
+        "test_type": "existing"
+      }
+    ],
+    "tests_run": 47,
+    "tests_passed": 35,
+    "tests_failed": 12,
+    "execution_mode": "external_validation",
+    "base_url": "http://127.0.0.1:61724",
+    "server_type": "static_file_server"
+  },
+  "executionDetails": {
+    "status": "failed",
+    "tests_run": 47,
+    "tests_passed": 35,
+    "tests_failed": 12,
+    "message": "External validation (static_file_server server on http://127.0.0.1:61724): 47 tests run, 35 passed, 12 failed.",
+    "runners": [
+      {
+        "tool": "SELENIUM",
+        "cmd": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/c",
+          "C:\\Users\\ST-Elamaran\\Downloads\\apache-maven-3.9.14-bin\\apache-maven-3.9.14\\bin\\mvn.CMD",
+          "test"
+        ],
+        "exit_code": 1,
+        "timed_out": false,
+        "duration_sec": 259.413,
+        "output": "40 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:40 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:50:45 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:45 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:50:50 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:50 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:50:56 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:50:56 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:01 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:01 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:06 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:06 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:10 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:10 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:15 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:15 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:19 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:19 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:23 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:23 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:27 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:27 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:31 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:31 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:35 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:35 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:39 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:39 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:44 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:44 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:48 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:48 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:52 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:52 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:51:56 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:51:56 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.",
+        "output_tail": "omiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:00 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.devtools.CdpVersionFinder findNearestMatch\r\nWARNING: Unable to find CDP implementation matching 151\r\nAug 13, 2026 9:52:05 AM org.openqa.selenium.chromium.ChromiumDriver lambda$new$5\r\nWARNING: Unable to find version of CDP to use for 151.0.7922.110. You may need to include a dependency on a specific version of the CDP using something similar to `org.seleniumhq.selenium:selenium-devtools-v86:4.25.0` where the version (\"v86\") matches the version of the chromium-based browser you're using and the version number of the artifact is the same as Selenium's.",
+        "tests_run": 47,
+        "tests_passed": 35,
+        "tests_failed": 12,
+        "executed": true,
+        "status": "failed",
+        "report_available": true,
+        "report_tool": "allure",
+        "report_url": "/allure-report"
+      },
+      {
+        "tool": "PLAYWRIGHT",
+        "cmd": [
+          "C:\\WINDOWS\\system32\\cmd.exe",
+          "/c",
+          "C:\\Program Files\\nodejs\\npx.CMD",
+          "playwright",
+          "test",
+          "--reporter=html,junit",
+          "--browser=chromium"
+        ],
+        "exit_code": 1,
+        "timed_out": false,
+        "duration_sec": 7.596,
+        "output": "<testsuites id=\"\" name=\"\" tests=\"0\" failures=\"0\" skipped=\"0\" errors=\"0\" time=\"0.5741970000000001\">\n</testsuites>\n\nTo open last HTML report run:\n\u001b[36m\u001b[39m\n\u001b[36m  npx playwright show-report\u001b[39m\n\u001b[36m\u001b[39m",
+        "output_tail": "<testsuites id=\"\" name=\"\" tests=\"0\" failures=\"0\" skipped=\"0\" errors=\"0\" time=\"0.5741970000000001\">\n</testsuites>\n\nTo open last HTML report run:\n\u001b[36m\u001b[39m\n\u001b[36m  npx playwright show-report\u001b[39m\n\u001b[36m\u001b[39m",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "executed": true,
+        "status": "failed",
+        "report_available": true,
+        "report_tool": "playwright",
+        "report_index_path": "C:\\migrations\\workspace_restores\\89556023-a1c4-44fc-b420-d5b3ebacb48d\\tests-20260812-131112-bf59c25b\\.functional_tests\\playwright\\playwright-report\\index.html"
+      },
+      {
+        "tool": "SELENIUM_EXISTING",
+        "cmd": [
+          "C:\\Users\\ST-Elamaran\\Downloads\\apache-maven-3.9.14-bin\\apache-maven-3.9.14\\bin\\mvn.CMD",
+          "-Dtest=ResolverBuilderBaseTest,FlowBuilderTest,UIRepeatTest,OverwriteRequiredCompositeTest,DefineIncludeTestCase,ELExprTemplateTestCase,IncludeHandler4577TestCase,IncludeParamTestCase,RemoveTestCase,RepeatTestCase,TemplateTestCase,TestUserTags,UITestCase,CompositionTestCase,DecorateTestCase,IncludeTestCase,UserTagTestCase,AjaxScriptBuilderTest,AbstractUIComponentBaseTest,AbstractUIComponentPropertyTest",
+          "test"
+        ],
+        "exit_code": 1,
+        "timed_out": false,
+        "duration_sec": 158.17,
+        "output": "\r\nINFO: processed class:jakarta.faces.view.facelets.DelegatingMetaTagHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletsAttachedObjectHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.BehaviorHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ComponentConfig\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ComponentHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.CompositeFaceletHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ConverterConfig\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ConverterHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.Facelet\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletCache\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletCache$MemberFactory\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletCacheFactory\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.el.ELContext\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletContext\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FaceletException\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.FacetHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.MetaRule\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.MetaRuleset\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.Metadata\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.MetadataTarget\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.Tag\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagAttribute\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagAttributeException\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagAttributes\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagDecorator\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagException\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagHandlerDelegate\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.TagHandlerDelegateFactory\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ValidatorConfig\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.view.facelets.ValidatorHandler\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.servlet.Servlet\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.webapp.FacesServlet\r\nAug 13, 2026 9:53:58 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.faces.webapp.FacesServletFactory\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.AttributeUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.BeanValidationUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.CommonHtmlAttributes\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.CommonHtmlEvents\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ComponentUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ELContextDecorator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.EditableValueHolderState\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.EditableValueHolderState$ImmutableEditableValueHolderState\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ExternalSpecifications\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:jakarta.validation.MessageInterpolator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.FacesMessageInterpolator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.MessageUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ParametrizableFacesMessage\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.SelectItemsIterator\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.SelectItemsUtil\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.SharedRendererUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.ValueReferenceResolver\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.VarUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.Assert\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.ClassUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.CollectionUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LocaleUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LocaleUtils$SyncAvoid\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjBooleanConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjByteConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjCharConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjFloatConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjShortConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.SharedStringBuilder",
+        "output_tail": "uilder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.LocaleUtils$SyncAvoid\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjBooleanConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjByteConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjCharConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjFloatConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils$ObjShortConsumer\r\nAug 13, 2026 9:53:59 AM org.apache.myfaces.buildtools.maven2.plugin.builder.qdox.QdoxModelBuilder processClass\r\nINFO: processed class:org.apache.myfaces.core.api.shared.lang.SharedStringBuilder",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "executed": true,
+        "status": "failed",
+        "test_type": "existing"
+      }
+    ]
+  }
+}

@@ -1,0 +1,179 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package jakarta.faces.component;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+
+import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+     * Tests for {@link UIComponent#encodeAll(jakarta.faces.context.FacesContext)}.
+ */
+public class UIComponentEncodeAllTest extends AbstractFacesTestCase
+{
+    protected IMocksControl _mocksControl;
+    private UIComponent _testimpl;
+
+    @Override
+    @BeforeEach
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        _mocksControl = EasyMock.createNiceControl();
+        //_facesContext = _mocksControl.createMock(FacesContext.class);
+        Collection<Method> mockedMethods = new ArrayList<Method>();
+        Class<UIComponent> clazz = UIComponent.class;
+        mockedMethods.add(clazz.getDeclaredMethod("pushComponentToEL", FacesContext.class, UIComponent.class));
+        mockedMethods.add(clazz.getDeclaredMethod("isRendered", (Class<?>[])null));
+        mockedMethods.add(clazz.getDeclaredMethod("popComponentFromEL", FacesContext.class));
+        mockedMethods.add(clazz.getDeclaredMethod("encodeBegin", FacesContext.class));
+        mockedMethods.add(clazz.getDeclaredMethod("getRendersChildren", (Class<?>[])null));
+        mockedMethods.add(clazz.getDeclaredMethod("encodeChildren", FacesContext.class));
+        mockedMethods.add(clazz.getDeclaredMethod("getChildren", (Class<?>[])null));
+        mockedMethods.add(clazz.getDeclaredMethod("getChildCount", (Class<?>[])null));
+        mockedMethods.add(clazz.getDeclaredMethod("encodeEnd", FacesContext.class));
+
+        _testimpl = _mocksControl.createMock(clazz, mockedMethods.toArray(new Method[mockedMethods.size()]));
+        _mocksControl.checkOrder(true);
+    }
+
+    @Test
+    public void testEncodeAllNullContext() throws Exception
+    {
+        Assertions.assertThrows(NullPointerException.class,
+                () ->  _testimpl.encodeAll(null));
+    }
+
+    @Test
+    public void testEncodeAllNotRendered() throws Exception
+    {
+        /*TODO: implement me
+        EasyMock.expect(_testimpl.isRendered()).andReturn(false);
+        _mocksControl.replay();
+        _testimpl.encodeAll(facesContext);
+        _mocksControl.verify();
+        */
+    }
+
+    @Test
+    public void testEncodeAllRenderesChildren() throws Exception
+    {
+        /*TODO: implement me
+        EasyMock.expect(_testimpl.isRendered()).andReturn(true);
+        _testimpl.encodeBegin(EasyMock.same(facesContext));
+        EasyMock.expect(_testimpl.getRendersChildren()).andReturn(true);
+        _testimpl.encodeChildren(EasyMock.same(facesContext));
+        _testimpl.encodeEnd(EasyMock.same(facesContext));
+        _mocksControl.replay();
+        _testimpl.encodeAll(facesContext);
+        _mocksControl.verify();
+        */
+    }
+
+    @Test
+    public void testEncodeAllNotRenderesChildren() throws Exception
+    {
+        /*TODO: implement me
+        EasyMock.expect(_testimpl.isRendered()).andReturn(true);
+        _testimpl.encodeBegin(EasyMock.same(facesContext));
+        EasyMock.expect(_testimpl.getRendersChildren()).andReturn(false);
+
+        List<UIComponent> childs = new ArrayList<UIComponent>();
+        UIComponent testChild = _mocksControl.createMock(UIComponent.class);
+        childs.add(testChild);
+        EasyMock.expect(_testimpl.getChildCount()).andReturn(childs.size());        
+        EasyMock.expect(_testimpl.getChildren()).andReturn(childs);
+        testChild.encodeAll(EasyMock.same(facesContext));
+
+        _testimpl.encodeEnd(EasyMock.same(facesContext));
+        _mocksControl.replay();
+        _testimpl.encodeAll(facesContext);
+        _mocksControl.verify();
+        */
+    }
+
+    /**
+     * Regression test for the frozen-childCount bug (equivalent to Mojarra issue eclipse-ee4j/mojarra#5807).
+     *
+     * When a child component appends a new sibling to the parent during its own encode,
+     * the parent's encodeAll must visit that late-appended sibling in the same pass.
+     * The bug manifested when the child count was captured once before the loop
+     * ("int childCount = getChildCount()") and the loop bound was never updated,
+     * silently dropping any children added mid-iteration.
+     */
+    @Test
+    public void testEncodeAllChildAppendedDuringParentEncodeIsVisited() throws Exception
+    {
+        List<String> encoded = new ArrayList<>();
+
+        // A panel with no renderer → getRendersChildren() returns false,
+        // so encodeAll iterates children directly rather than delegating to the renderer.
+        UIPanel parent = new UIPanel();
+        parent.setRendererType(null);
+
+        // The late child is appended by firstChild during encode and must also be visited.
+        UIOutput lateChild = new UIOutput()
+        {
+            @Override
+            public void encodeBegin(FacesContext ctx) throws IOException
+            {
+                encoded.add("late");
+            }
+
+            @Override
+            public void encodeEnd(FacesContext ctx) throws IOException { }
+        };
+        lateChild.setRendererType(null);
+
+        // The first child appends lateChild to the shared parent during its own encodeBegin.
+        UIOutput firstChild = new UIOutput()
+        {
+            @Override
+            public void encodeBegin(FacesContext ctx) throws IOException
+            {
+                encoded.add("first");
+                parent.getChildren().add(lateChild);
+            }
+
+            @Override
+            public void encodeEnd(FacesContext ctx) throws IOException { }
+        };
+        firstChild.setRendererType(null);
+
+        parent.getChildren().add(firstChild);
+        parent.encodeAll(facesContext);
+
+        Assertions.assertEquals(List.of("first", "late"), encoded,
+                "A child appended to the parent during encodeAll must be visited in the same pass");
+    }
+}

@@ -1,0 +1,1975 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.myfaces.view.facelets.component;
+
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.el.ValueExpression;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.ContextCallback;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.FacesEvent;
+import jakarta.faces.event.FacesListener;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.model.ArrayDataModel;
+import jakarta.faces.model.CollectionDataModel;
+import jakarta.faces.model.DataModel;
+import jakarta.faces.model.IterableDataModel;
+import jakarta.faces.model.ListDataModel;
+import jakarta.faces.model.ResultSetDataModel;
+import jakarta.faces.model.ScalarDataModel;
+import jakarta.faces.render.Renderer;
+
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.cdi.model.FacesDataModelManager;
+import org.apache.myfaces.core.api.shared.EditableValueHolderState;
+import org.apache.myfaces.core.api.shared.lang.Assert;
+import org.apache.myfaces.core.api.shared.lang.SharedStringBuilder;
+import org.apache.myfaces.util.ExternalSpecifications;
+import org.apache.myfaces.view.facelets.LocationAwareFacesException;
+import org.apache.myfaces.view.facelets.ViewPoolProcessor;
+
+/**
+ * >Use this tag as an alternative to <code>h:dataTable</code> or <code>c:forEach</code>
+ */
+@JSFComponent(name="ui:repeat", defaultRendererType="facelets.ui.Repeat")
+public class UIRepeat extends UIComponentBase implements NamingContainer
+{
+    public static final String COMPONENT_TYPE = "facelets.ui.Repeat";
+
+    public static final String COMPONENT_FAMILY = "facelets";
+    
+    private static final String STRING_BUILDER_KEY = UIRepeat.class.getName() + ".SHARED_STRING_BUILDER";
+
+    private final static DataModel<?> EMPTY_MODEL = new ListDataModel<Object>(Collections.emptyList());
+    
+    private static final Class<Object[]> OBJECT_ARRAY_CLASS = Object[].class;
+
+    /**
+     * Flat pre-collected list of ALL descendants (including transient) used to reset clientIds
+     * on each row change, avoiding a full recursive tree walk per row.
+     * Cleared when {@code _index} returns to -1 so it is rebuilt at the start of every new
+     * iteration sequence.
+     */
+    private transient List<UIComponent> _iterationResetList;
+
+    /**
+     * Flat pre-collected list of only the non-transient {@link EditableValueHolder} descendants.
+     * Used to iterate EVH components during per-row save / restore without a recursive tree walk.
+     * {@code null} = not yet built; {@link Collections#emptyList()} = built, no EVH children.
+     * Cleared when {@code _index} returns to -1.
+     */
+    private transient List<UIComponent> _iterationEVHList;
+
+    protected Object _initialDescendantFullComponentState = null;
+
+    protected Map<String, Map<String, Object>> _rowDeltaStates = new HashMap<>();
+    protected Map<String, Map<String, Object>> _rowTransientStates = new HashMap<>();
+
+    /**
+     * Per-row EVH state.  Outer key is {@link #getContainerClientId(FacesContext)}, i.e. this repeat's clientId plus
+     * its current row index, which for a repeat nested inside another iterating component also carries the enclosing
+     * rows' indices; value is the list of per-EVH states indexed by position in {@link #_iterationEVHList} (null
+     * entry = component in default empty state).  A missing outer entry also means all EVH components are in default
+     * state.
+     */
+    private Map<String, List<EditableValueHolderState>> _rowStates = new HashMap<>();
+    
+    /**
+     * Handle case where this table is nested inside another table. See method getDataModel for more details.
+     * <p>
+     * Key: parentClientId (aka rowId when nested within a parent table) Value: DataModel
+     */
+    private Map<String, DataModel> _dataModelMap = new HashMap<>();
+    
+    // will be set to false if the data should not be refreshed at the beginning of the encode phase
+    private boolean _isValidChilds = true;
+    
+    private boolean _emptyModel = false;
+
+    private int _end = -1;
+    
+    private int _count;
+    
+    private int _index = -1;
+
+    private transient Object _origValue;
+    private transient Object _origVarStatus;
+
+    private transient FacesContext _facesContext;
+    
+    public UIRepeat()
+    {
+        setRendererType("facelets.ui.Repeat");
+    }
+
+    @Override
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
+    
+    @JSFProperty
+    public int getOffset()
+    {
+        return getStateHelper().eval(PropertyKeys.offset, 0);
+    }
+
+    public void setOffset(int offset)
+    {
+        getStateHelper().put(PropertyKeys.offset, offset );
+    }
+    
+    @JSFProperty
+    public int getSize()
+    {
+        return getStateHelper().eval(PropertyKeys.size, -1);
+    }
+
+    public void setSize(int size)
+    {
+        getStateHelper().put(PropertyKeys.size, size );
+    }
+    
+    @JSFProperty
+    public int getStep()
+    {
+        return getStateHelper().eval(PropertyKeys.step, 1);
+    }
+
+    public void setStep(int step)
+    {
+        getStateHelper().put(PropertyKeys.step, step );
+    }
+    
+    @JSFProperty
+    public int getBegin()
+    {
+        return getStateHelper().eval(PropertyKeys.begin, -1);
+    }
+
+    public void setBegin(int begin)
+    {
+        getStateHelper().put(PropertyKeys.begin, begin );
+    }
+    
+    @JSFProperty
+    public int getEnd()
+    {
+        return getStateHelper().eval(PropertyKeys.end, -1);
+    }
+
+    public void setEnd(int end)
+    {
+        getStateHelper().put(PropertyKeys.end, end );
+    }
+    
+    @JSFProperty(literalOnly=true)
+    public String getVar()
+    {
+        return getStateHelper().get(PropertyKeys.var);
+    }
+
+    public void setVar(String var)
+    {
+        getStateHelper().put(PropertyKeys.var, var );
+    }
+    
+    @JSFProperty(literalOnly=true)
+    public String getVarStatus()
+    {
+        return getStateHelper().get(PropertyKeys.varStatus);
+    }
+    
+    public void setVarStatus(String varStatus)
+    {
+        getStateHelper().put(PropertyKeys.varStatus, varStatus );
+    }
+    
+    /**
+     * Indicates whether the state for a component in each row should not be
+     * discarded before the datatable is rendered again.
+     * 
+     * This will only work reliable if the datamodel of the
+     * datatable did not change either by sorting, removing or
+     * adding rows. Default: false
+     * 
+     * @return
+     */
+    @JSFProperty(literalOnly = true, faceletsOnly = true)
+    public boolean isRowStatePreserved()
+    {
+        Boolean b = getStateHelper().get(PropertyKeys.rowStatePreserved);
+        return b == null ? false : b;
+    }
+    
+    public void setRowStatePreserved(boolean preserveComponentState)
+    {
+        getStateHelper().put(PropertyKeys.rowStatePreserved, preserveComponentState);
+    }
+
+    protected DataModel getDataModel()
+    {
+        DataModel dataModel;
+        String clientID = "";
+
+        UIComponent parent = getParent();
+        if (parent != null)
+        {
+            clientID = parent.getContainerClientId(getFacesContext());
+        }
+        dataModel = _dataModelMap.get(clientID);
+        if (dataModel == null)
+        {
+            dataModel = createDataModel();
+            _dataModelMap.put(clientID, dataModel);
+        }
+        return dataModel;
+    }
+    
+    private DataModel createDataModel()
+    {
+        Object value = getValue();
+
+        if (value == null)
+        {
+            return EMPTY_MODEL;
+        }
+        else if (value instanceof DataModel)
+        {
+            return (DataModel) value;
+        }
+        else
+        {
+            DataModel dataModel = null;
+            if (ExternalSpecifications.isCDIAvailable(getFacesContext().getExternalContext()))
+            {
+                dataModel = FacesDataModelManager.createDataModel(getFacesContext(), value.getClass(), value);
+            }
+            if (dataModel == null)
+            {
+                if (value instanceof List)
+                {
+                    return new ListDataModel((List<?>) value);
+                }
+                else if (OBJECT_ARRAY_CLASS.isAssignableFrom(value.getClass()))
+                {
+                    return new ArrayDataModel((Object[]) value);
+                }
+                else if (value instanceof ResultSet)
+                {
+                    return new ResultSetDataModel((ResultSet) value);
+                }
+                else if (value instanceof Iterable)
+                {
+                    return new IterableDataModel<>((Iterable<?>) value);
+                } 
+                else if (value instanceof Map) 
+                {
+                    return new IterableDataModel<>(((Map<?, ?>) value).entrySet());
+                }
+                else if (value instanceof Collection)
+                {
+                    return new CollectionDataModel((Collection) value);
+                }
+                else
+                {
+                    return new ScalarDataModel(value);
+                }
+            }
+            else
+            {
+                return dataModel;
+            }
+        }
+    }
+    
+    @Override
+    public void setValueExpression(String name, ValueExpression binding)
+    {
+        Assert.notNull(name, "name");
+
+        if ("value".equals(name))
+        {
+            _dataModelMap.clear();
+        }
+        else if ("rowIndex".equals(name))
+        {
+            throw new IllegalArgumentException("name " + name);
+        }
+        super.setValueExpression(name, binding);
+    }
+    
+    @JSFProperty
+    public Object getValue()
+    {
+        return  getStateHelper().eval(PropertyKeys.value);
+    }
+
+    public void setValue(Object value)
+    {
+        getStateHelper().put(PropertyKeys.value, value);
+        _dataModelMap.clear();
+        _rowStates.clear();
+        _isValidChilds = true;
+    }
+
+    @Override
+    public String getContainerClientId(FacesContext context)
+    {
+        //MYFACES-2744 UIData.getClientId() should not append rowIndex, instead use UIData.getContainerClientId()
+        String clientId = super.getContainerClientId(context);
+        
+        int index = getIndex();
+        if (index == -1)
+        {
+            return clientId;
+        }
+
+        StringBuilder sb = SharedStringBuilder.get(context, STRING_BUILDER_KEY);
+        return sb.append(clientId).append(context.getNamingContainerSeparatorChar()).append(index).toString();
+    }
+    
+    private RepeatStatus _getRepeatStatus()
+    {
+        int begin = getBegin();
+        if (begin == -1) 
+        {
+            begin = getOffset();
+        }
+        
+        return new RepeatStatus(_count == 0, _index + getStep() >= getRowCount(),
+            _count, _index, begin, _end, getStep());
+        
+    }
+
+    private void _captureScopeValues()
+    {
+        String var = getVar();
+        if (var != null)
+        {
+            _origValue = getFacesContext().getExternalContext().getRequestMap().get(var);
+        }
+        String varStatus = getVarStatus();
+        if (varStatus != null)
+        {
+            _origVarStatus = getFacesContext().getExternalContext().getRequestMap().get(varStatus);
+        }
+    }
+
+    private boolean _isIndexAvailable()
+    {
+        return _emptyModel || getDataModel().isRowAvailable();
+    }
+
+    private void _restoreScopeValues()
+    {
+        String var = getVar();
+        if (var != null)
+        {
+            Map<String, Object> attrs = getFacesContext().getExternalContext().getRequestMap();
+            if (_origValue != null)
+            {
+                attrs.put(var, _origValue);
+                _origValue = null;
+            }
+            else
+            {
+                attrs.remove(var);
+            }
+        }
+        String varStatus = getVarStatus();
+        if (getVarStatus() != null)
+        {
+            Map<String, Object> attrs = getFacesContext().getExternalContext().getRequestMap();
+            if (_origVarStatus != null)
+            {
+                attrs.put(varStatus, _origVarStatus);
+                _origVarStatus = null;
+            }
+            else
+            {
+                attrs.remove(varStatus);
+            }
+        }
+    }
+
+    
+    /**
+     * Returns the rowCount of the underlying DataModel.
+     * @return
+     */
+    public int getRowCount()
+    {
+        if (_emptyModel) // empty model
+        {
+            return (getEnd() - getBegin())/(getStep() <= 0 ? 1 : getStep());
+        }
+        else 
+        {
+            return getDataModel().getRowCount();
+        }
+    }
+    
+    /**
+     * @return the current index.
+     */
+    public int getIndex()
+    {
+        return _index;
+    }
+    
+    public void setRowIndex(int index)
+    {
+        if (isRowStatePreserved())
+        {
+            _setIndexPreserveComponentState(index);
+        }
+        else
+        {
+            _setIndexWithoutPreserveComponentState(index);
+        }
+    }
+
+    private void _setIndexPreserveComponentState(int index)
+    {
+       if (index < -1)
+       {
+           throw new IllegalArgumentException("rowIndex is less than -1");
+       }
+
+       if (_index == index)
+       {
+           return;
+       }
+
+       FacesContext facesContext = getFacesContext();
+
+       if (_initialDescendantFullComponentState != null)
+       {
+           //Just save the row
+           Map<String, Object> sm = saveFullDescendantComponentStates(facesContext, null,
+                                                                      getChildren().iterator(), false);
+           if (sm != null && !sm.isEmpty())
+           {
+               _rowDeltaStates.put(getContainerClientId(facesContext), sm);
+           }
+           if (index != -1)
+           {
+               _rowTransientStates.put(getContainerClientId(facesContext),
+                       saveTransientDescendantComponentStates(facesContext, null, getChildren().iterator(), false));
+           }
+       }
+
+       _index = index;
+       
+       DataModel<?> localModel = getDataModel();
+       localModel.setRowIndex(index);
+
+       if (_index != -1)
+       {
+           String var = getVar();
+           if (var != null && (_emptyModel || localModel.isRowAvailable()))
+           {
+               if (_emptyModel)
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, _index);
+               }
+               else
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, localModel.getRowData());
+               }
+           }
+           String varStatus = getVarStatus();
+           if (varStatus != null)
+           {
+               getFacesContext().getExternalContext().getRequestMap()
+                       .put(varStatus, _getRepeatStatus());
+           }
+       }
+
+       if (_initialDescendantFullComponentState != null)
+       {
+           Map<String, Object> rowState = _rowDeltaStates.get(getContainerClientId(facesContext));
+           if (rowState == null)
+           {
+               //Restore as original
+               restoreFullDescendantComponentStates(facesContext, getChildren().iterator(),
+                       _initialDescendantFullComponentState, false);
+           }
+           else
+           {
+               //Restore first original and then delta
+               restoreFullDescendantComponentDeltaStates(facesContext, getChildren().iterator(),
+                       rowState, _initialDescendantFullComponentState, false);
+           }
+           if (_index == -1)
+           {
+               restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), null, false);
+           }
+           else
+           {
+               rowState = _rowTransientStates.get(getContainerClientId(facesContext));
+               if (rowState == null)
+               {
+                   restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), null, false);
+               }
+               else
+               {
+                   restoreTransientDescendantComponentStates(facesContext, getChildren().iterator(), rowState, false);
+               }
+           }
+       }
+
+    }
+   
+   private void _setIndexWithoutPreserveComponentState(int index)
+   {
+       if (index < -1)
+       {
+           throw new IllegalArgumentException("rowIndex is less than -1");
+       }
+
+       if (_index == index)
+       {
+           return;
+       }
+
+       FacesContext facesContext = getFacesContext();
+
+       if (_index == -1)
+       {
+           // Entering first row from -1: build both flat lists once per iteration sequence.
+           if (_iterationEVHList == null)
+           {
+               _iterationResetList = new ArrayList<>();
+               collectIterationResetList(this, true, true, _iterationResetList);
+               List<UIComponent> evhList = new ArrayList<>();
+               collectIterationEVHList(this, true, true, evhList);
+               _iterationEVHList = evhList.isEmpty() ? Collections.emptyList() : evhList;
+           }
+       }
+       else
+       {
+           // Leaving a row: save its EVH state.
+           saveChildStates();
+       }
+
+       _index = index;
+       
+       DataModel<?> localModel = getDataModel();
+       localModel.setRowIndex(index);
+
+       if (_index != -1)
+       {
+           String var = getVar();
+           if (var != null && (_emptyModel || localModel.isRowAvailable()))
+           {
+               if (_emptyModel)
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, _index);
+               }
+               else
+               {
+                   getFacesContext().getExternalContext().getRequestMap().put(var, localModel.getRowData());
+               }
+           }
+           String varStatus = getVarStatus();
+           if (varStatus != null)
+           {
+               getFacesContext().getExternalContext().getRequestMap()
+                       .put(varStatus, _getRepeatStatus());
+           }
+       }
+
+       // Reset all descendant clientIds (flat list, avoids recursive tree walk per row).
+       resetDescendantClientIds();
+
+       if (_index == -1)
+       {
+           // Returning to -1: restore default state and clear flat lists so the next
+           // iteration sequence re-evaluates the subtree shape.
+           restoreChildStates();
+           _iterationResetList = null;
+           _iterationEVHList = null;
+       }
+       else
+       {
+           // Entering a row: restore its saved EVH state (or empty default for first visit).
+           restoreChildStates();
+       }
+   }
+
+   /**
+    * Resets all descendant clientIds for the current row using a pre-collected flat list,
+    * avoiding a recursive tree walk on every row change.
+    * The list is built once per iteration sequence and reused for all subsequent rows.
+    */
+   private void resetDescendantClientIds()
+   {
+       if (_iterationResetList == null)
+       {
+           _iterationResetList = new ArrayList<>();
+           collectIterationResetList(this, true, true, _iterationResetList);
+       }
+       List<UIComponent> list = _iterationResetList;
+       for (int i = 0, size = list.size(); i < size; i++)
+       {
+           UIComponent c = list.get(i);
+           c.setId(c.getId());
+       }
+   }
+
+   private static void collectIterationResetList(UIComponent parent, boolean iterateFacets,
+                                                  boolean recurseChildFacets,
+                                                  List<UIComponent> list)
+   {
+       if (iterateFacets && parent.getFacetCount() > 0)
+       {
+           for (UIComponent component : parent.getFacets().values())
+           {
+               // setId(getId()) must be called on all components, including transient ones.
+               // Only non-transient components have their subtree recursed.
+               list.add(component);
+               if (!component.isTransient())
+               {
+                   collectIterationResetList(component, recurseChildFacets, true, list);
+               }
+           }
+       }
+       int childCount = parent.getChildCount();
+       if (childCount > 0)
+       {
+           List<UIComponent> children = parent.getChildren();
+           for (int i = 0; i < childCount; i++)
+           {
+               UIComponent component = children.get(i);
+               list.add(component);
+               if (!component.isTransient())
+               {
+                   collectIterationResetList(component, recurseChildFacets, true, list);
+               }
+           }
+       }
+   }
+
+   /**
+    * Collects only the non-transient {@link EditableValueHolder} descendants of {@code parent}
+    * in depth-first order (facets first, then children).  The resulting list is iterated by
+    * {@link #saveChildStates} and {@link #restoreChildStates} to save/restore per-row EVH state
+    * without a recursive tree walk.
+    */
+   private static void collectIterationEVHList(UIComponent parent, boolean iterateFacets,
+                                               boolean recurseChildFacets,
+                                               List<UIComponent> list)
+   {
+       if (iterateFacets && parent.getFacetCount() > 0)
+       {
+           for (UIComponent component : parent.getFacets().values())
+           {
+               if (!component.isTransient())
+               {
+                   if (component instanceof EditableValueHolder)
+                   {
+                       list.add(component);
+                   }
+                   if (component.getChildCount() > 0
+                           || (recurseChildFacets && component.getFacetCount() > 0))
+                   {
+                       collectIterationEVHList(component, recurseChildFacets, true, list);
+                   }
+               }
+           }
+       }
+       int childCount = parent.getChildCount();
+       if (childCount > 0)
+       {
+           List<UIComponent> children = parent.getChildren();
+           for (int i = 0; i < childCount; i++)
+           {
+               UIComponent component = children.get(i);
+               if (!component.isTransient())
+               {
+                   if (component instanceof EditableValueHolder)
+                   {
+                       list.add(component);
+                   }
+                   if (component.getChildCount() > 0
+                           || (recurseChildFacets && component.getFacetCount() > 0))
+                   {
+                       collectIterationEVHList(component, recurseChildFacets, true, list);
+                   }
+               }
+           }
+       }
+   }
+
+    /**
+     * Saves the current EVH state of every component in {@link #_iterationEVHList} into
+     * {@link #_rowStates}.  Outer key is the row index being left; value is a list whose
+     * position corresponds to the EVH position in {@link #_iterationEVHList} (null = default
+     * state).  A null or all-null list is stored as absent (map entry removed) to keep memory
+     * usage proportional to actual dirty state.  No {@link UIComponent#getClientId} call is made.
+     * Called when leaving a row (before {@code _index} is updated).
+     */
+    private void saveChildStates()
+    {
+        List<UIComponent> evhList = _iterationEVHList;
+        if (evhList == null || evhList.isEmpty())
+        {
+            return;
+        }
+        int n = evhList.size();
+        List<EditableValueHolderState> states = new ArrayList<>(n);
+        boolean hasState = false;
+        for (int i = 0; i < n; i++)
+        {
+            EditableValueHolderState state = EditableValueHolderState.create((EditableValueHolder) evhList.get(i));
+            states.add(state);
+            if (state != null)
+            {
+                hasState = true;
+            }
+        }
+        if (hasState)
+        {
+            _rowStates.put(getContainerClientId(getFacesContext()), states);
+        }
+        else
+        {
+            _rowStates.remove(getContainerClientId(getFacesContext()));
+        }
+    }
+
+    /**
+     * Restores the EVH state of every component in {@link #_iterationEVHList} from
+     * {@link #_rowStates}.  Outer key is the row index being entered (already updated).
+     * If no saved state exists for a row, or no saved state exists for a specific EVH position,
+     * {@link EditableValueHolderState#EMPTY} is applied to clear all transient EVH fields.
+     * No {@link UIComponent#getClientId} call is made.
+     */
+    private void restoreChildStates()
+    {
+        List<UIComponent> evhList = _iterationEVHList;
+        if (evhList == null || evhList.isEmpty())
+        {
+            return;
+        }
+        List<EditableValueHolderState> states = _rowStates.get(getContainerClientId(getFacesContext()));
+        for (int i = 0, n = evhList.size(); i < n; i++)
+        {
+            EditableValueHolderState state = (states != null && i < states.size()) ? states.get(i) : null;
+            if (state == null)
+            {
+                EditableValueHolderState.EMPTY.restoreState((EditableValueHolder) evhList.get(i));
+            }
+            else
+            {
+                state.restoreState((EditableValueHolder) evhList.get(i));
+            }
+        }
+    }
+
+   /*
+    * Copied from UIData
+    */
+    private void restoreTransientDescendantComponentStates(FacesContext facesContext,
+            Iterator<UIComponent> childIterator,
+            Map<String, Object> state,
+            boolean restoreChildFacets) 
+    {
+        while (childIterator.hasNext()) 
+        {
+            UIComponent component = childIterator.next();
+
+            // reset the client id (see spec 3.1.6)
+            component.setId(component.getId());
+            if (!component.isTransient()) 
+            {
+                component.restoreTransientState(facesContext,
+                        state == null ? null : state.get(component.getClientId(facesContext)));
+
+                Iterator<UIComponent> childsIterator = restoreChildFacets
+                        ? component.getFacetsAndChildren()
+                        : component.getChildren().iterator();
+                restoreTransientDescendantComponentStates(facesContext, childsIterator, state, true);
+            }
+        }
+
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private void restoreFullDescendantComponentDeltaStates(FacesContext facesContext,
+        Iterator<UIComponent> childIterator, Map<String, Object> state, Object initialState,
+        boolean restoreChildFacets) 
+    {
+            Iterator<? extends Object[]> descendantFullStateIterator = null;
+            while (childIterator.hasNext()) 
+            {
+                if (descendantFullStateIterator == null && initialState != null)
+                {
+                    descendantFullStateIterator = ((Collection<? extends Object[]>) initialState).iterator();
+                }
+
+                UIComponent component = childIterator.next();
+                // reset the client id (see spec 3.1.6)
+                component.setId(component.getId());
+
+                if (!component.isTransient()) 
+                {
+                    Object childInitialState = null;
+                    Object descendantInitialState = null;
+                    Object childState = null;
+                    String childId = null;
+                    childState = (state == null) ? null : state.get(component.getClientId(facesContext));
+
+                    if (descendantFullStateIterator != null && descendantFullStateIterator.hasNext())
+                    {
+                        do
+                        {
+                            Object[] object = descendantFullStateIterator.next();
+                            childInitialState = object[0];
+                            descendantInitialState = object[1];
+                            childId = (String) object[2];
+                        } while (descendantFullStateIterator.hasNext() && !component.getId().equals(childId));
+
+                        if (!component.getId().equals(childId))
+                        {
+                            // cannot apply initial state to components correctly. State is corrupt
+                            throw new IllegalStateException("Cannot restore row correctly.");
+                        }
+                    }
+
+                    component.clearInitialState();
+                    if (childInitialState != null)
+                    {
+                        component.restoreState(facesContext, childInitialState);
+                        component.markInitialState();
+                        component.restoreState(facesContext, childState);
+                    }
+                    else
+                    {
+                        component.restoreState(facesContext, childState);
+                        component.markInitialState();
+                    }
+
+                    Iterator<UIComponent> childsIterator = restoreChildFacets
+                            ? component.getFacetsAndChildren()
+                            : component.getChildren().iterator();
+                    restoreFullDescendantComponentDeltaStates(facesContext, childsIterator, state,
+                            descendantInitialState, true);
+                }
+            }
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private Map<String, Object> saveFullDescendantComponentStates(FacesContext facesContext,
+        Map<String, Object> stateMap, Iterator<UIComponent> childIterator, boolean saveChildFacets)
+    {
+        while (childIterator.hasNext())
+        {
+            UIComponent child = childIterator.next();
+            if (!child.isTransient())
+            {
+                // Add an entry to the collection, being an array of two
+                // elements. The first element is the state of the children
+                // of this component; the second is the state of the current
+                // child itself.
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                stateMap = saveFullDescendantComponentStates(facesContext, stateMap, childsIterator, true);
+                Object state = child.saveState(facesContext);
+                if (state != null)
+                {
+                    if (stateMap == null)
+                    {
+                        stateMap = new HashMap<>();
+                    }
+                    stateMap.put(child.getClientId(facesContext), state);
+                }
+            }
+        }
+        return stateMap;
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private void restoreFullDescendantComponentStates(FacesContext facesContext,
+        Iterator<UIComponent> childIterator, Object initialState, boolean restoreChildFacets) 
+    {
+        Iterator<? extends Object[]> descendantStateIterator = null;
+        while (childIterator.hasNext())
+        {
+            if (descendantStateIterator == null && initialState != null) 
+            {
+                descendantStateIterator = ((Collection<? extends Object[]>) initialState).iterator();
+            }
+
+            UIComponent component = childIterator.next();
+            // reset the client id (see spec 3.1.6)
+            component.setId(component.getId());
+
+            if (!component.isTransient())
+            {
+                Object childState = null;
+                Object descendantState = null;
+                String childId = null;
+                if (descendantStateIterator != null && descendantStateIterator.hasNext())
+                {
+                    do
+                    {
+                        Object[] object = descendantStateIterator.next();
+                        childState = object[0];
+                        descendantState = object[1];
+                        childId = (String) object[2];
+                    } while (descendantStateIterator.hasNext() && !component.getId().equals(childId));
+
+                    if (!component.getId().equals(childId))
+                    {
+                        // cannot apply initial state to components correctly.
+                        throw new IllegalStateException("Cannot restore row correctly.");
+                    }
+                }
+
+                component.clearInitialState();
+                component.restoreState(facesContext, childState);
+                component.markInitialState();
+
+                Iterator<UIComponent> childsIterator = restoreChildFacets
+                        ? component.getFacetsAndChildren()
+                        : component.getChildren().iterator();
+                restoreFullDescendantComponentStates(facesContext, childsIterator, descendantState, true);
+            }
+        }
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private Map<String, Object> saveTransientDescendantComponentStates(FacesContext facesContext,
+        Map<String, Object> childStates, Iterator<UIComponent> childIterator, boolean saveChildFacets)
+    {
+        while (childIterator.hasNext())
+        {
+            UIComponent child = childIterator.next();
+            if (!child.isTransient())
+            {
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                childStates = saveTransientDescendantComponentStates(facesContext, childStates, childsIterator, true);
+                Object state = child.saveTransientState(facesContext);
+                if (state != null)
+                {
+                    if (childStates == null)
+                    {
+                        childStates = new HashMap<>();
+                    }
+                    childStates.put(child.getClientId(facesContext), state);
+                }
+            }
+        }
+        return childStates;
+    }
+
+    /*
+    * Copied from UIData
+    */
+    private Collection<Object[]> saveDescendantInitialComponentStates(FacesContext facesContext,
+        Iterator<UIComponent> childIterator, boolean saveChildFacets)
+    {
+        Collection<Object[]> childStates = null;
+        while (childIterator.hasNext())
+        {
+            UIComponent child = childIterator.next();
+            if (!child.isTransient())
+            {
+                Iterator<UIComponent> childsIterator = saveChildFacets
+                        ? child.getFacetsAndChildren()
+                        : child.getChildren().iterator();
+                Object descendantState = saveDescendantInitialComponentStates(facesContext, childsIterator, true);
+                Object state = null;
+                if (child.initialStateMarked())
+                {
+                    child.clearInitialState();
+                    state = child.saveState(facesContext);
+                    child.markInitialState();
+                }
+                else
+                {
+                    state = child.saveState(facesContext);
+                }
+
+                // Add an entry to the collection, being an array of two elements.
+                // The first element is the state of the children of this component;
+                // the second is the state of the current child itself.
+                if (childStates == null)
+                {
+                    childStates = new ArrayList<>();
+                }
+                childStates.add(new Object[] { state, descendantState, child.getId() });
+            }
+        }
+        return childStates;
+    }
+
+    /**
+     * Calculates the count value for the given index.
+     * @param index
+     * @return
+     */
+    private int _calculateCountForIndex(int index)
+    {
+        return (index - getOffset()) / getStep();
+    }
+
+    private void _validateAttributes() throws FacesException
+    {
+        
+        int begin = getBegin();
+        int end = getEnd();
+        int size = getSize();
+        _emptyModel = getDataModel() == EMPTY_MODEL && begin != -1 && end != -1;
+        int count = getRowCount();
+        int offset = getOffset();
+        if (begin == -1)
+        {
+            if (size >= 0)
+            {
+                end = getOffset() + getSize();
+            }
+        }      
+       
+        if (end == -1 && size == -1) 
+        {
+            if (begin == -1) 
+            {
+                end = getDataModel().getRowCount();
+            } 
+            else 
+            {
+                end = getDataModel().getRowCount() - 1;
+            }
+        }
+        
+        int step = getStep();
+        boolean sizeIsEnd = _emptyModel;
+        boolean countdown = _emptyModel && end < begin;
+
+        if (size == -1)
+        {
+            if (begin == -1)
+            {
+                size =  end;
+                sizeIsEnd = true;
+            } 
+            else 
+            {
+                size = countdown ? (begin - end + 1)/step : (end - begin + 1)/step;
+            }     
+        }
+        
+        step = countdown && step > 0 ? -step : step;
+
+        if (_emptyModel)
+        {
+            if (step > 0 && (end < begin))
+            {
+                throw new LocationAwareFacesException("on empty models, end cannot be less than begin " +
+                        "when the step is positive", this);
+            }
+            else if (step < 0 && (end > begin))
+            {
+                throw new LocationAwareFacesException("on empty models, end cannot be greater than begin " +
+                        "when the step is negative", this);
+            }
+            setStep(step);
+        }
+        else if (end >= 0)
+        {
+            if (size < 0)
+            {
+                throw new LocationAwareFacesException("iteration size cannot be less than zero", this);
+            }
+            else if (!sizeIsEnd && (begin == -1) && (offset + size) > end)
+            {
+                throw new LocationAwareFacesException("iteration size cannot be greater than collection size", this);
+            }
+            else if (!sizeIsEnd && (begin == -1) && (offset + size) > count)
+            {
+                throw new LocationAwareFacesException("iteration size cannot be greater than collection size", this);
+            }
+            else if (!sizeIsEnd && (begin >= 0) && (begin + size) > end+1)
+            {
+                throw new LocationAwareFacesException("iteration size cannot be greater than collection size", this);
+            }
+            else if(!sizeIsEnd && (begin >= 0) && (end+1 > count))
+            {
+                throw new LocationAwareFacesException("end cannot be greater than collection size", this);
+            }
+            else if(!sizeIsEnd && (begin >= 0) && (begin > count))
+            {
+                throw new LocationAwareFacesException("begin cannot be greater than collection size", this);
+            }
+        }
+
+        if (begin >= 0 && begin > end)
+        {
+            throw new LocationAwareFacesException("begin cannot be greater than end", this);
+        }
+        if (size > -1 && offset > end)
+        {
+            throw new LocationAwareFacesException("iteration offset cannot be greater than collection size", this);
+        }
+
+        if (!_emptyModel && step == -1)
+        {
+            setStep(1);
+        }
+
+        if (!_emptyModel && step < 0)
+        {
+            throw new LocationAwareFacesException("iteration step size cannot be less than zero", this);
+        }
+
+        else if (step == 0)
+        {
+            throw new LocationAwareFacesException("iteration step size cannot be equal to zero", this);
+        }
+
+        _end = end;
+        
+    }
+
+    public void process(FacesContext faces, PhaseId phase)
+    {
+        // stop if not rendered
+        if (!isRendered())
+        {
+            return;
+        }
+        
+        // validate attributes
+        _validateAttributes();
+        
+        // reset index
+        _captureScopeValues();
+        setRowIndex(-1);
+
+        try
+        {
+            // has children
+            if (getChildCount() > 0)
+            {
+                int i = getOffset();               
+                
+                int begin = getBegin();
+                int end = getEnd(); 
+                if (begin == -1)
+                {
+                    end = getSize();
+                    end = (end >= 0) ? i + end - 1 : Integer.MAX_VALUE - 1;
+                }
+                
+                if (begin >= 0) 
+                {
+                    i = begin;
+                }
+                int step = getStep();
+                // grab renderer
+                String rendererType = getRendererType();
+                Renderer renderer = null;
+                if (rendererType != null)
+                {
+                    renderer = getRenderer(faces);
+                }
+                
+                _count = 0;
+                
+                setRowIndex(i);
+                
+                while (((step > 0 && i <= end) || (step < 0 && i >= end)) && _isIndexAvailable())
+                {
+
+                    if (PhaseId.RENDER_RESPONSE.equals(phase) && renderer != null)
+                    {
+                        renderer.encodeChildren(faces, this);
+                    }
+                    else
+                    {
+                        int childCount = getChildCount();
+                        if (childCount > 0)
+                        {
+                            List<UIComponent> children = getChildren();
+                            for (int j = 0; j < childCount; j++)
+                            {
+                                UIComponent child = children.get(j);
+                                if (PhaseId.APPLY_REQUEST_VALUES.equals(phase))
+                                {
+                                    child.processDecodes(faces);
+                                }
+                                else if (PhaseId.PROCESS_VALIDATIONS.equals(phase))
+                                {
+                                    child.processValidators(faces);
+                                }
+                                else if (PhaseId.UPDATE_MODEL_VALUES.equals(phase))
+                                {
+                                    child.processUpdates(faces);
+                                }
+                                else if (PhaseId.RENDER_RESPONSE.equals(phase))
+                                {
+                                    child.encodeAll(faces);
+                                }
+                            }
+                        }
+                    }
+                    
+                    ++_count;
+                    
+                    i += step;
+                    
+                    setRowIndex(i);
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            throw new LocationAwareFacesException(e, this);
+        }
+        finally
+        {
+            setRowIndex(-1);
+            _restoreScopeValues();
+        }
+    }
+
+    @Override
+    public boolean invokeOnComponent(FacesContext context, String clientId,
+            ContextCallback callback) throws FacesException
+    {
+        Assert.notNull(context, "context");
+        Assert.notNull(clientId, "clientId");
+        Assert.notNull(callback, "callback");
+        
+        final String baseClientId = getClientId(context);
+
+        // searching for this component?
+        boolean returnValue = baseClientId.equals(clientId);
+
+        boolean isCachedFacesContext = isTemporalFacesContext();
+        if (!isCachedFacesContext)
+        {
+            setTemporalFacesContext(context);
+        }
+
+        pushComponentToEL(context, this);
+        try
+        {
+            if (returnValue)
+            {
+                try
+                {
+                    callback.invokeContextCallback(context, this);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    throw new LocationAwareFacesException(e, this);
+                }
+            }
+
+            // Now Look throught facets on this UIComponent
+            if (this.getFacetCount() > 0)
+            {
+                for (Iterator<UIComponent> it = this.getFacets().values().iterator(); !returnValue && it.hasNext();)
+                {
+                    returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                }
+            }
+    
+            if (returnValue)
+            {
+                return returnValue;
+            }
+            
+            // is the component an inner component?
+            if (clientId.startsWith(baseClientId))
+            {
+                // Check if the clientId for the component, which we 
+                // are looking for, has a rowIndex attached
+                char separator = context.getNamingContainerSeparatorChar();
+                String subId = clientId.substring(baseClientId.length() + 1);
+                //If the char next to baseClientId is the separator one and
+                //the subId matches the regular expression
+                if (clientId.charAt(baseClientId.length()) == separator && 
+                        subId.matches("[0-9]+"+separator+".*"))
+                {
+                    String clientRow = subId.substring(0, subId.indexOf(separator));
+        
+                    // safe the current index, count aside
+                    final int prevIndex = _index;
+                    final int prevCount = _count;
+                    
+                    try
+                    {
+                        int invokeIndex = Integer.parseInt(clientRow);
+                        // save the current scope values and set the right index
+                        _captureScopeValues();
+                        if (invokeIndex != -1)
+                        {
+                            // calculate count for RepeatStatus
+                            _count = _calculateCountForIndex(invokeIndex);
+                        }
+                        setRowIndex(invokeIndex);
+                        
+                        if (!_isIndexAvailable())
+                        {
+                            return false;
+                        }
+                        
+                        for (Iterator<UIComponent> it1 = getChildren().iterator(); 
+                            !returnValue && it1.hasNext();)
+                        {
+                            //recursive call to find the component
+                            returnValue = it1.next().invokeOnComponent(context, clientId, callback);
+                        }
+                    }
+                    finally
+                    {
+                        // restore the previous count, index and scope values
+                        _count = prevCount;
+                        setRowIndex(prevIndex);
+                        _restoreScopeValues();
+                    }
+                }
+                else
+                {
+                    // Searching for this component's children
+                    if (this.getChildCount() > 0)
+                    {
+                        // Searching for this component's children/facets
+                        for (Iterator<UIComponent> it = this.getChildren().iterator(); !returnValue && it.hasNext();)
+                        {
+                            returnValue = it.next().invokeOnComponent(context, clientId, callback);
+                        }
+                    }
+                }
+            }
+        }
+        finally
+        {
+            //all components must call popComponentFromEl after visiting is finished
+            popComponentFromEL(context);
+            if (!isCachedFacesContext)
+            {
+                setTemporalFacesContext(null);
+            }
+        }
+
+        return returnValue;
+    }
+    
+    /*
+    * Copied from UIData
+    */
+    @Override
+    public void markInitialState()
+    {
+        if (isRowStatePreserved() &&
+                getFacesContext().getAttributes().containsKey(StateManager.IS_BUILDING_INITIAL_STATE))
+                {
+            _initialDescendantFullComponentState = saveDescendantInitialComponentStates(getFacesContext(),
+                    getChildren().iterator(), false);
+        }
+        super.markInitialState();
+    }
+
+    @Override
+    protected FacesContext getFacesContext()
+    {
+        if (_facesContext == null)
+        {
+            return super.getFacesContext();
+        }
+        else
+        {
+            return _facesContext;
+        }
+    }
+    
+    private boolean isTemporalFacesContext()
+    {
+        return _facesContext != null;
+    }
+    
+    private void setTemporalFacesContext(FacesContext facesContext)
+    {
+        _facesContext = facesContext;
+    }
+
+    // override the behavior from UIComponent to visit all children once per "row"
+    @Override
+    public boolean visitTree(VisitContext context, VisitCallback callback)
+    {
+        boolean skipIterationHint = context.getHints().contains(VisitHint.SKIP_ITERATION);
+        if (skipIterationHint)
+        {
+            return super.visitTree(context, callback);
+        }
+        
+        // push the Component to EL
+        pushComponentToEL(context.getFacesContext(), this);
+        try
+        {
+            if (!isVisitable(context))
+            {
+                return false;
+            }
+
+            // save the current index, count aside
+            final int prevIndex = _index;
+            final int prevCount = _count;
+
+
+            // reset index and save scope values
+            _captureScopeValues();
+            setRowIndex(-1);
+
+            try
+            {
+                VisitResult res = context.invokeVisitCallback(this, callback);
+                switch (res)
+                {
+                // we are done, nothing has to be processed anymore
+                case COMPLETE:
+                    return true;
+
+                case REJECT:
+                    return false;
+
+                //accept
+                default:
+                    // determine if we need to visit our children
+                    // Note that we need to do this check because we are a NamingContainer
+                    Collection<String> subtreeIdsToVisit = context.getSubtreeIdsToVisit(this);
+                    boolean doVisitChildren = subtreeIdsToVisit != null && !subtreeIdsToVisit.isEmpty();
+                    if (doVisitChildren)
+                    {
+                        // validate attributes
+                        _validateAttributes();
+   
+                        // visit the facets of the component
+                        if (getFacetCount() > 0)
+                        {
+                            for (UIComponent facet : getFacets().values())
+                            {
+                                if (facet.visitTree(context, callback))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        // visit the children once per "row"
+                        if (getChildCount() > 0)
+                        {
+                            int i = getOffset();
+                            int end = getSize();
+                            int step = getStep();
+                            end = (end >= 0) ? i + end : Integer.MAX_VALUE - 1;
+                            _count = 0;
+
+                            setRowIndex(i);
+                            while (i < end && _isIndexAvailable())
+                            {
+                                int childCount = getChildCount();
+                                if (childCount > 0)
+                                {
+                                    List<UIComponent> children = getChildren();
+                                    for (int j = 0; j < childCount; j++)
+                                    {
+                                        UIComponent child = children.get(j);
+                                        if (child.visitTree(context, callback))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                }
+
+                                _count++;
+                                i += step;
+
+                                setRowIndex(i);
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+            finally
+            {
+
+                // restore the previous count, index and scope values
+                _count = prevCount;
+                setRowIndex(prevIndex);
+                _restoreScopeValues();
+            }
+        }
+        finally
+        {
+            // pop the component from EL
+            popComponentFromEL(context.getFacesContext());
+        }
+    }
+
+    @Override
+    public void processDecodes(FacesContext faces)
+    {
+        if (!isRendered())
+        {
+            return;
+        }
+        
+        process(faces, PhaseId.APPLY_REQUEST_VALUES);
+        decode(faces);
+    }
+
+    @Override
+    public void processUpdates(FacesContext faces)
+    {
+        if (!isRendered())
+        {
+            return;
+        }
+        
+        process(faces, PhaseId.UPDATE_MODEL_VALUES);
+        
+        if (faces.getRenderResponse())
+        {
+            _isValidChilds = false;
+        }
+    }
+
+    @Override
+    public void processValidators(FacesContext faces)
+    {
+        if (!isRendered())
+        {
+            return;
+        }
+        
+        process(faces, PhaseId.PROCESS_VALIDATIONS);
+        
+        // check if an validation error forces the render response for our data
+        if (faces.getRenderResponse())
+        {
+            _isValidChilds = false;
+        }
+    }
+
+    private final class IndexedEvent extends FacesEvent
+    {
+        private final FacesEvent _target;
+
+        private final int _index;
+
+        public IndexedEvent(UIRepeat owner, FacesEvent target, int index)
+        {
+            super(owner);
+            _target = target;
+            _index = index;
+        }
+
+        @Override
+        public PhaseId getPhaseId()
+        {
+            return _target.getPhaseId();
+        }
+
+        @Override
+        public void setPhaseId(PhaseId phaseId)
+        {
+            _target.setPhaseId(phaseId);
+        }
+
+        @Override
+        public boolean isAppropriateListener(FacesListener listener)
+        {
+            return _target.isAppropriateListener(listener);
+        }
+
+        @Override
+        public void processListener(FacesListener listener)
+        {
+            UIRepeat owner = (UIRepeat) getComponent();
+            
+            // safe the current index, count aside
+            final int prevIndex = owner._index;
+            final int prevCount = owner._count;
+            
+            try
+            {
+                owner._captureScopeValues();
+                if (this._index != -1)
+                {
+                    // calculate count for RepeatStatus
+                    _count = _calculateCountForIndex(this._index);
+                }
+                owner.setRowIndex(this._index);
+                if (owner._isIndexAvailable())
+                {
+                    _target.processListener(listener);
+                }
+            }
+            finally
+            {
+                // restore the previous count, index and scope values
+                owner._count = prevCount;
+                owner.setRowIndex(prevIndex);
+                owner._restoreScopeValues();
+            }
+        }
+
+        public int getIndex()
+        {
+            return _index;
+        }
+
+        public FacesEvent getTarget()
+        {
+            return _target;
+        }
+
+    }
+
+    @Override
+    public void broadcast(FacesEvent event) throws AbortProcessingException
+    {
+        if (event instanceof IndexedEvent idxEvent)
+        {
+            
+            // safe the current index, count aside
+            final int prevIndex = _index;
+            final int prevCount = _count;
+            
+            try
+            {
+                _captureScopeValues();
+                if (idxEvent.getIndex() != -1)
+                {
+                    // calculate count for RepeatStatus
+                    _count = _calculateCountForIndex(idxEvent.getIndex());
+                }
+                setRowIndex(idxEvent.getIndex());
+                if (_isIndexAvailable())
+                {
+                    // get the target FacesEvent
+                    FacesEvent target = idxEvent.getTarget();
+                    FacesContext facesContext = getFacesContext();
+                    
+                    // get the component associated with the target event and push
+                    // it and its composite component parent, if available, to the
+                    // component stack to have them available while processing the 
+                    // event (see also UIViewRoot._broadcastAll()).
+                    UIComponent targetComponent = target.getComponent();
+                    UIComponent compositeParent = UIComponent
+                            .getCompositeComponentParent(targetComponent);
+                    if (compositeParent != null)
+                    {
+                        pushComponentToEL(facesContext, compositeParent);
+                    }
+                    pushComponentToEL(facesContext, targetComponent);
+                    
+                    try
+                    {
+                        // actual event broadcasting
+                        targetComponent.broadcast(target);
+                    }
+                    finally
+                    {
+                        // remove the components from the stack again
+                        popComponentFromEL(facesContext);
+                        if (compositeParent != null)
+                        {
+                            popComponentFromEL(facesContext);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                // restore the previous count, index and scope values
+                _count = prevCount;
+                setRowIndex(prevIndex);
+                _restoreScopeValues();
+            }
+        }
+        else
+        {
+            super.broadcast(event);
+        }
+    }
+
+    @Override
+    public void queueEvent(FacesEvent event)
+    {
+        super.queueEvent(new IndexedEvent(this, event, _index));
+    }
+
+    @Override
+    public void restoreState(FacesContext context, Object state)
+    {
+        if (state == null)
+        {
+            return;
+        }
+        
+        Object[] values = (Object[]) state;
+        super.restoreState(context, values[0]);
+
+        Object restoredRowStates = UIComponentBase.restoreAttachedState(context, values[1]);
+        if (restoredRowStates == null)
+        {
+            if (!_rowDeltaStates.isEmpty())
+            {
+                _rowDeltaStates.clear();
+            }
+        }
+        else
+        {
+            _rowDeltaStates = (Map<String, Map<String, Object> >) restoredRowStates;
+        }
+
+        if (values.length > 2)
+        {
+            Object rs = UIComponentBase.restoreAttachedState(context, values[2]);
+            if (rs == null)
+            {
+                if (!_rowStates.isEmpty())
+                {
+                    _rowStates.clear();
+                }
+            }
+            else
+            {
+                _rowStates = (Map<String, List<EditableValueHolderState>>) rs;
+            }
+        }
+        if (values.length > 3)
+        {
+            Object rs = UIComponentBase.restoreAttachedState(context, values[3]);
+            if (rs == null)
+            {
+                if (!_rowTransientStates.isEmpty())
+                {
+                    _rowTransientStates.clear();
+                }
+            }
+            else
+            {
+                _rowTransientStates = (Map<String, Map<String, Object> >) rs;
+            }
+        }
+    }
+
+    @Override
+    public Object saveState(FacesContext context)
+    {
+        if (context.getViewRoot() != null)
+        {
+            if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
+                    == ViewPoolProcessor.RESET_MODE_SOFT)
+            {
+                _dataModelMap.clear();
+                _isValidChilds = true;
+                _rowTransientStates.clear();
+                _rowStates.clear();
+                _rowDeltaStates.clear();
+            }
+            else if (context.getViewRoot().getAttributes().get(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY)
+                    == ViewPoolProcessor.RESET_MODE_HARD)
+            {
+                _dataModelMap.clear();
+                _isValidChilds = true;
+                _rowStates.clear();
+            }
+        }
+        if (initialStateMarked())
+        {
+            Object parentSaved = super.saveState(context);
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
+            {
+                if (parentSaved == null &&_rowDeltaStates.isEmpty() && _rowStates.isEmpty())
+                {
+                    return null;
+                }
+                else
+                {
+                    Object[] values = new Object[4];
+                    values[0] = super.saveState(context);
+                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                    values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                    values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
+                    return values;
+                }
+            }
+            else
+            {
+                if (parentSaved == null &&_rowDeltaStates.isEmpty())
+                {
+                    return null;
+                }
+                else
+                {
+                    Object[] values = new Object[2];
+                    values[0] = super.saveState(context);
+                    values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                    return values;
+                }
+            }
+        }
+        else
+        {
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
+            {
+                Object[] values = new Object[4];
+                values[0] = super.saveState(context);
+                values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                values[3] = UIComponentBase.saveAttachedState(context, _rowTransientStates);
+                return values; 
+            }
+            else
+            {
+                Object[] values = new Object[2];
+                values[0] = super.saveState(context);
+                values[1] = UIComponentBase.saveAttachedState(context, _rowDeltaStates);
+                return values;
+            }
+        }
+    }
+    
+    @Override
+    public void encodeBegin(FacesContext context) throws IOException
+    {
+        _iterationEVHList = null;
+        _iterationResetList = null;
+        if (_isValidChilds && !hasErrorMessages(context))
+        {
+            // Clear the data model so that when rendering code calls
+            // getDataModel a fresh model is fetched from the backing
+            // bean via the value-binding.
+            _dataModelMap.clear();
+
+            // When the data model is cleared it is also necessary to
+            // clear the saved row state, as there is an implicit 1:1
+            // relation between objects in the _rowStates and the
+            // corresponding DataModel element.
+            if (!isRowStatePreserved())
+            {
+                _rowStates.clear();
+            }
+        }
+        super.encodeBegin(context);
+    }
+
+    private boolean hasErrorMessages(FacesContext context)
+    {
+        // perf: getMessageList() return a RandomAccess instance.
+        // See org.apache.myfaces.context.servlet.FacesContextImpl.addMessage
+        List<FacesMessage> messageList = context.getMessageList();
+        for (int i = 0, size = messageList.size(); i < size;  i++)
+        {
+            FacesMessage message = messageList.get(i);
+            if (message.getSeverity() == FacesMessage.Severity.ERROR ||
+                    message.getSeverity() == FacesMessage.Severity.FATAL)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void encodeChildren(FacesContext faces) throws IOException
+    {
+        if (!isRendered())
+        {
+            return;
+        }
+        
+        process(faces, PhaseId.RENDER_RESPONSE);
+    }
+
+    @Override
+    public boolean getRendersChildren()
+    {
+        if (getRendererType() != null)
+        {
+            Renderer renderer = getRenderer(getFacesContext());
+            if (renderer != null)
+            {
+                return renderer.getRendersChildren();
+            }
+        }
+        
+        return true;
+    }
+    
+    enum PropertyKeys
+    {
+         value
+        , var
+        , size
+        , varStatus
+        , offset
+        , step
+        , begin
+        , end
+        , rowStatePreserved
+    }
+}

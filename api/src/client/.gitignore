@@ -1,0 +1,8 @@
+node_modules/
+webpack.config.js
+webpack.config.js.map
+typescript/**/*.js
+typescript/**/*.js.map
+dts-build/
+.claude/
+.claude/*.json

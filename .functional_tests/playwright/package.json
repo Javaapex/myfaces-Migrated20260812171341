@@ -1,0 +1,13 @@
+{
+  "name": "javaapex-playwright-functional-tests",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "allure-playwright": "^3.0.0"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "report:allure": "allure generate allure-results --clean -o allure-report"
+  }
+}

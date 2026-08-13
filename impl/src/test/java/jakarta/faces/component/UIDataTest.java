@@ -1,0 +1,1543 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package jakarta.faces.component;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+
+import jakarta.faces.application.StateManager;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.component.visit.VisitCallback;
+import jakarta.faces.component.visit.VisitContext;
+import jakarta.faces.component.visit.VisitHint;
+import jakarta.faces.component.visit.VisitResult;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.FacesEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.render.Renderer;
+import org.apache.myfaces.test.base.junit.AbstractFacesTestCase;
+import org.apache.myfaces.test.mock.MockRenderedValueExpression;
+import org.apache.myfaces.test.mock.visit.MockVisitContext;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.*;
+import java.util.*;
+
+public class UIDataTest extends AbstractFacesTestCase
+{
+    private IMocksControl _mocksControl;
+    private UIData _testImpl;
+
+    @Override
+    @BeforeEach
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        _mocksControl = EasyMock.createControl();
+        _testImpl = new UIData();
+    }
+
+    /**
+     * Test method for
+     * {@link jakarta.faces.component.UIData#setValueExpression(java.lang.String, jakarta.el.ValueExpression)}.
+     */
+    @Test
+    public void testValueExpression()
+    {
+        assertSetValueExpressionException(IllegalArgumentException.class, "rowIndex");
+        assertSetValueExpressionException(NullPointerException.class, null);
+    }
+
+    private void assertSetValueExpressionException(Class<? extends Throwable> expected, final String name)
+    {
+        Assertions.assertThrows(expected,
+                () -> _testImpl.setValueExpression(name, null));
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getClientId(jakarta.faces.context.FacesContext)}.
+     */
+    @Test
+    public void testGetClientId()
+    {
+        _testImpl.setId("xxx");
+        Renderer renderer = _mocksControl.createMock(Renderer.class);
+        renderKit.addRenderer(UIData.COMPONENT_FAMILY, UIData.COMPONENT_TYPE, renderer);
+        Assertions.assertEquals("xxx", _testImpl.getClientId(facesContext));
+        _testImpl.setRowIndex(99);
+        //MYFACES-2744 UIData.getClientId() should not append rowIndex, instead use UIData.getContainerClientId()
+        Assertions.assertEquals("xxx", _testImpl.getClientId(facesContext)); 
+        Assertions.assertEquals("xxx:99", _testImpl.getContainerClientId(facesContext));
+    }
+
+    /**
+     * Test method for
+     * {@link jakarta.faces.component.UIData#invokeOnComponent(jakarta.faces.context.FacesContext, java.lang.String, jakarta.faces.component.ContextCallback)}
+     * .
+     * Tests, if invokeOnComponent also checks the facets of the h:column children (MYFACES-2370)
+     */
+    @Test
+    public void testInvokeOnComponentFacesContextStringContextCallback()
+    {
+        /**
+         * Concrete class of ContextCallback needed to test invokeOnComponent. 
+         */
+        final class MyContextCallback implements ContextCallback
+        {
+            
+            private boolean invoked = false;
+
+            public void invokeContextCallback(FacesContext context,
+                    UIComponent target)
+            {
+                this.invoked = true;
+            }
+            
+        }
+        
+        UIComponent facet = new UIOutput();
+        facet.setId("facet");
+        UIColumn column = new UIColumn();
+        column.setId("column");
+        column.getFacets().put("header", facet);
+        _testImpl.setId("uidata");
+        _testImpl.getChildren().add(column);
+        
+        MyContextCallback callback = new MyContextCallback();
+        _testImpl.invokeOnComponent(facesContext, facet.getClientId(facesContext), callback);
+        // the callback should have been invoked
+        Assertions.assertTrue(callback.invoked);
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#broadcast(jakarta.faces.event.FacesEvent)}.
+     */
+    @Test
+    public void testBroadcastFacesEvent()
+    {
+        // create event mock
+        final FacesEvent originalEvent = _mocksControl.createMock(FacesEvent.class);
+        
+        // create the component for the event
+        UIComponent eventComponent = new UICommand()
+        {
+
+            @Override
+            public void broadcast(FacesEvent event)
+                    throws AbortProcessingException
+            {
+                // the event must be the originalEvent
+                Assertions.assertEquals(originalEvent, event);
+                
+                // the current row index must be the row index from the time the event was queued
+                Assertions.assertEquals(5, _testImpl.getRowIndex());
+                
+                // the current component must be this (pushComponentToEL() must have happened)
+                Assertions.assertEquals(this, UIComponent.getCurrentComponent(facesContext));
+                
+                // to be able to verify that broadcast() really has been called
+                getAttributes().put("broadcastCalled", Boolean.TRUE);
+            }
+            
+        };
+        
+        // set component on event
+        EasyMock.expect(originalEvent.getComponent()).andReturn(eventComponent).anyTimes();
+        // set phase on event
+        EasyMock.expect(originalEvent.getPhaseId()).andReturn(PhaseId.INVOKE_APPLICATION).anyTimes();
+        _mocksControl.replay();
+        
+        // set PhaseId for event processing
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        // set row index for event
+        _testImpl.setRowIndex(5);
+        // UIData must be a child of UIViewRoot to queue and event
+        facesContext.getViewRoot().getChildren().add(_testImpl);
+        // queue event (this will create a FacesEventWrapper with the current row index)
+        _testImpl.queueEvent(originalEvent);
+        // change the current row index
+        _testImpl.setRowIndex(0);
+        // now broadcast the event (this will call UIData.broadcast())
+        facesContext.getViewRoot().broadcastEvents(facesContext, PhaseId.INVOKE_APPLICATION);
+        
+        // -= Assertions =-
+        
+        // the current component must be null (popComponentFromEL() must have happened)
+        Assertions.assertNull(UIComponent.getCurrentComponent(facesContext));
+        
+        // the row index must now be 0 (at broadcast() it must be 5)
+        Assertions.assertEquals(0, _testImpl.getRowIndex());
+        
+        // verify mock behavior
+        _mocksControl.verify();
+        
+        // verify that broadcast() really has been called
+        Assertions.assertEquals(Boolean.TRUE, eventComponent.getAttributes().get("broadcastCalled"));
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#encodeBegin(jakarta.faces.context.FacesContext)}.
+     */
+    @Test
+    public void testEncodeBeginFacesContext()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#encodeEnd(jakarta.faces.context.FacesContext)}.
+     */
+    @Test
+    public void testEncodeEndFacesContext()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#queueEvent(jakarta.faces.event.FacesEvent)}.
+     */
+    @Test
+    public void testQueueEventFacesEvent()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#processDecodes(jakarta.faces.context.FacesContext)}.
+     */
+    @Test
+    public void testProcessDecodesFacesContext()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#processValidators(jakarta.faces.context.FacesContext)}.
+     */
+    @Test
+    public void testProcessValidatorsFacesContext()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#processUpdates(jakarta.faces.context.FacesContext)}.
+     */
+    @Test
+    public void testProcessUpdatesFacesContext()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#saveState(jakarta.faces.context.FacesContext)}.
+     */
+    @Test
+    public void testSaveState()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for
+     * {@link jakarta.faces.component.UIData#restoreState(jakarta.faces.context.FacesContext, java.lang.Object)}.
+     */
+    @Test
+    public void testRestoreState()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#UIData()}.
+     */
+    @Test
+    public void testUIData()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setFooter(jakarta.faces.component.UIComponent)}.
+     */
+    @Test
+    public void testSetFooter()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getFooter()}.
+     */
+    @Test
+    public void testGetFooter()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setHeader(jakarta.faces.component.UIComponent)}.
+     */
+    @Test
+    public void testSetHeader()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getHeader()}.
+     */
+    @Test
+    public void testGetHeader()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#isRowAvailable()}.
+     */
+    @Test
+    public void testIsRowAvailable()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getRowCount()}.
+     */
+    @Test
+    public void testGetRowCount()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getRowData()}.
+     */
+    @Test
+    public void testGetRowData()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getRowIndex()}.
+     */
+    @Test
+    public void testGetRowIndex()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setRowIndex(int)}.
+     */
+    @Test
+    public void testSetRowIndex()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getDataModel()}.
+     */
+    @Test
+    public void testGetDataModel()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setDataModel(jakarta.faces.model.DataModel)}.
+     */
+    @Test
+    public void testSetDataModel()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setValue(java.lang.Object)}.
+     */
+    @Test
+    public void testSetValue()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setRows(int)}.
+     */
+    @Test
+    public void testSetRows()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setFirst(int)}.
+     */
+    @Test
+    public void testSetFirst()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getValue()}.
+     */
+    @Test
+    public void testGetValue()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getVar()}.
+     */
+    @Test
+    public void testGetVar()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#setVar(java.lang.String)}.
+     */
+    @Test
+    public void testSetVar()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getRows()}.
+     */
+    @Test
+    public void testGetRows()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getFirst()}.
+     */
+    @Test
+    public void testGetFirst()
+    {
+        // TODO
+    }
+
+    /**
+     * Test method for {@link jakarta.faces.component.UIData#getFamily()}.
+     */
+    @Test
+    public void testGetFamily()
+    {
+        // TODO
+    }
+    
+    /**
+     * Test method for 
+     * {@link jakarta.faces.component.UIData#visitTree(jakarta.faces.component.visit.VisitContext, jakarta.faces.component.visit.VisitCallback)}.
+     */
+    @Test
+    public void testVisitTree() {
+        UIData uidata = new UIData();
+        // value
+        Collection<String> value = new ArrayList<String>();
+        value.add("value#1");
+        value.add("value#2");
+        uidata.setValue(value);
+        // header facet
+        UIComponent headerFacet = new HtmlPanelGroup();
+        headerFacet.setId("headerFacet");
+        uidata.setHeader(headerFacet);
+        // footer facet
+        UIComponent footerFacet = new HtmlPanelGroup();
+        footerFacet.setId("footerFacet");
+        uidata.setFooter(footerFacet);
+        // first child
+        UIComponent child1 = new UIColumn();
+        // facet of first child
+        UIComponent facetOfChild1 = new HtmlPanelGroup();
+        child1.getFacets().put("someFacet", facetOfChild1);
+        // child of first child
+        UIOutput childOfChild1 = new UIOutput();
+        childOfChild1.setId("childOfColumn");
+        child1.getChildren().add(childOfChild1);
+        uidata.getChildren().add(child1);
+        // second child (should not be processed --> != UIColumn)
+        UIComponent child2 = new HtmlPanelGroup(); 
+        uidata.getChildren().add(child2);
+        VisitCallback callback = null;
+        
+        IMocksControl control = EasyMock.createControl();
+        VisitContext visitContextMock = control.createMock(VisitContext.class);
+        EasyMock.expect(visitContextMock.getFacesContext()).andReturn(facesContext).anyTimes();
+        EasyMock.expect(visitContextMock.getHints()).andReturn(Collections.emptySet()).anyTimes();
+        Collection<String> subtreeIdsToVisit = new ArrayList<String>();
+        subtreeIdsToVisit.add("1");
+        EasyMock.expect(visitContextMock.getSubtreeIdsToVisit(uidata)).andReturn(subtreeIdsToVisit);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(uidata, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(headerFacet, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(footerFacet, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(facetOfChild1, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(child1, callback)).andReturn(VisitResult.ACCEPT);
+        EasyMock.expect(visitContextMock.invokeVisitCallback(childOfChild1, callback)).andReturn(VisitResult.ACCEPT).times(2);
+        control.replay();
+        
+        uidata.visitTree(visitContextMock, callback);
+        
+        control.verify();
+        
+        // VisitHint.SKIP_ITERATION test:
+        
+        // (1) uiData with two rows - should iterate over row twice
+        MockVisitContext mockVisitContext = new MockVisitContext(facesContext, null);
+        CountingVisitCallback countingVisitCallback = new CountingVisitCallback(2);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
+        
+        // (2) uiData with two values - should iterate over row ones - SKIP_ITERATION is used
+        mockVisitContext = new MockVisitContext(facesContext, EnumSet.of(VisitHint.SKIP_ITERATION));
+        countingVisitCallback = new CountingVisitCallback(1);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
+        
+        // (3) uiData with five values - should iterate over row five times
+        value = new ArrayList<String>();
+        value.add("1");
+        value.add("2");
+        value.add("3");
+        value.add("4");
+        value.add("5");
+        uidata.setValue(value);
+        mockVisitContext = new MockVisitContext(facesContext, null);
+        countingVisitCallback = new CountingVisitCallback(5);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
+        
+        // (4) uiData with five values - should iterate over child ones - SKIP_ITERATION is used
+        mockVisitContext = new MockVisitContext(facesContext, EnumSet.of(VisitHint.SKIP_ITERATION));
+        countingVisitCallback = new CountingVisitCallback(1);
+        uidata.visitTree(mockVisitContext, countingVisitCallback);
+        countingVisitCallback.verify();
+    }
+
+    
+    public static class RowData
+    {
+        private String text;
+
+        public RowData(String text, String style)
+        {
+           super();
+            this.text = text;
+            this.style = style;
+        }
+
+        private String style;
+        
+        public String getText()
+        {
+            return text;
+        }
+
+        public void setText(String text)
+        {
+            this.text = text;
+        }
+
+        public String getStyle()
+        {
+            return style;
+        }
+
+        public void setStyle(String style)
+        {
+            this.style = style;
+        }
+    }
+    
+    @Test
+    public void testPreserveRowComponentState1() throws Exception
+    {
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text1","style2"));
+        model.add(new RowData("text1","style3"));
+        model.add(new RowData("text1","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        UIColumn column = new UIColumn();
+        UIOutput text = new UIOutput();
+        
+        //This is only required if markInitiaState fix is not used 
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        column.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+        
+        table.setVar("row");
+        table.setRowStatePreserved(true);
+        table.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{list}",List.class));
+        
+        text.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{row.text}",String.class));
+        
+        root.getChildren().add(table);
+        table.getChildren().add(column);
+        column.getChildren().add(text);
+
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals(rowData.getText(), text.getValue());
+            text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            table.setRowIndex(i);
+            Assertions.assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+        
+    }
+        
+    @Test
+    public void testCollectionDataModel() throws Exception
+    {
+        SimpleCollection<RowData> model = new SimpleCollection<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text1","style2"));
+        model.add(new RowData("text1","style3"));
+        model.add(new RowData("text1","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        UIColumn column = new UIColumn();
+        UIOutput text = new UIOutput();
+        
+        //This is only required if markInitiaState fix is not used 
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        column.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+        
+        table.setVar("row");
+        table.setRowStatePreserved(true);
+        table.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{list}", Collection.class));
+        
+        text.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{row.text}",String.class));
+        
+        root.getChildren().add(table);
+        table.getChildren().add(column);
+        column.getChildren().add(text);
+        
+        //Check the value expressions are working and change the component state
+        int i = 0;
+        for (Iterator<RowData> it = model.iterator(); it.hasNext();)
+        {
+            RowData rowData = it.next(); 
+            table.setRowIndex(i);
+            Assertions.assertEquals(rowData.getText(), text.getValue());
+            i++;
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+    }
+
+    
+    private final class SimpleCollection<T> extends AbstractCollection<T>
+    {
+        private List<T> delegate = new ArrayList();
+
+        public boolean add(T e)
+        {
+            return delegate.add(e);
+        }
+            
+        @Override
+        public Iterator<T> iterator()
+        {
+            return delegate.iterator();
+        }
+
+        @Override
+        public int size()
+        {
+            return delegate.size();
+        }
+    }
+
+    private final class CountingVisitCallback implements VisitCallback {
+        
+        public final int expectedVisits;
+        
+        public CountingVisitCallback(int expectedRowVisits) {
+            super();
+            this.expectedVisits = expectedRowVisits;
+        }
+
+        public int headerFacetVisits = 0;
+        public int footerFacetVisits = 0;
+        public int rowVisits = 0;
+        
+        public VisitResult visit(VisitContext context, UIComponent target) {
+            
+            if ("headerFacet".equals(target.getId())) {
+                headerFacetVisits++;
+            } else if ("footerFacet".equals(target.getId())) {
+                footerFacetVisits++;
+            } else if ("childOfColumn".equals(target.getId())) {
+                rowVisits++;
+            }
+            return VisitResult.ACCEPT;
+        }
+        
+        public void verify() {
+                Assertions.assertEquals(1, headerFacetVisits);
+                Assertions.assertEquals(1, footerFacetVisits);
+                Assertions.assertEquals(expectedVisits, rowVisits);
+        }
+    }
+    
+    @Test
+    public void testProcessDecodesRenderedFalse() throws Exception {
+        UIData uiData = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
+        
+        uiData.processDecodes(facesContext);
+        
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
+    }
+    
+    @Test
+    public void testProcessDecodesRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
+        _addColumn();
+        
+        _testImpl.processDecodes(facesContext);
+        
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
+    }
+    
+    @Test
+    public void testProcessValidatorsRenderedFalse() throws Exception {
+        UIData uiData = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
+        
+        uiData.processValidators(facesContext);
+        
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processDecodes must not change currentComponent");
+        
+    }
+    
+    @Test
+    public void testProcessValidatorsRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
+        _addColumn();
+        
+        _testImpl.processValidators(facesContext);
+        
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processValidators must not change currentComponent");
+    }
+    
+    @Test
+    public void testProcessUpdatesRenderedFalse() throws Exception {
+        UIData uiData = new VerifyNoLifecycleMethodComponent();
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext,  uiData, false);
+        
+        uiData.processUpdates(facesContext);
+        
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processUpdates must not change currentComponent");
+        
+    }
+    
+    @Test
+    public void testProcessUpdatesRenderedTrue() throws Exception {
+        
+        UIComponent parent = MockRenderedValueExpression.setUpComponentStack(facesContext, _testImpl, true);
+        _addColumn();
+        
+        _testImpl.processUpdates(facesContext);
+        
+        Assertions.assertEquals(parent, UIComponent.getCurrentComponent(facesContext), "processUpdates must not change currentComponent");
+    }
+
+    private void _addColumn() {
+        UIColumn uiColumn = new UIColumn();
+        uiColumn.setId("testId");
+        _testImpl.getChildren().add(uiColumn);
+        MockRenderedValueExpression ve = new MockRenderedValueExpression("#{component.is eq 'testId'}", Boolean.class, uiColumn, true);
+        uiColumn.setValueExpression("rendered", ve);
+    }
+    
+
+    /** Verifies no call to encode* and process* methods */
+    public class VerifyNoLifecycleMethodComponent extends UIData
+    {
+        @Override
+        public void setRowIndex(int rowIndex) {
+            Assertions.fail();
+        }
+        @Override
+        public void decode(FacesContext context) {
+            Assertions.fail();
+        }
+        public void validate(FacesContext context) {
+            Assertions.fail();
+        }
+        public void updateModel(FacesContext context) {
+            Assertions.fail();
+        }
+        @Override
+        public void encodeBegin(FacesContext context) throws IOException {
+            Assertions.fail();
+        }
+        @Override
+        public void encodeChildren(FacesContext context) throws IOException {
+            Assertions.fail();
+        }
+        @Override
+        public void encodeEnd(FacesContext context) throws IOException {
+            Assertions.fail();
+        }
+    }   
+    
+    
+    /**
+     * Test state save and restore cycle taking in consideration portlet case.
+     * 
+     * In portlets, saveState() could be called on INVOKE_APPLICATION phase and
+     * restoreState() could be called in RENDER_RESPONSE phase.
+     * 
+     * This test is active when PSS is disabled.
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testSaveAndRestorePortletLifecycleWithoutPss1() throws Exception
+    {
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text2","style2"));
+        model.add(new RowData("text3","style3"));
+        model.add(new RowData("text4","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        createSimpleTable(root);
+        UIData table = (UIData) root.getChildren().get(0);
+        UIColumn column = (UIColumn) table.getChildren().get(0);
+        UIInput text = (UIInput) column.getChildren().get(0);
+        
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals(rowData.getText(), text.getValue());
+            text.setSubmittedValue("value"+(i+1));
+            //text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+        
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        
+        Object state = table.saveState(facesContext);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(state);
+        oos.flush();
+        baos.flush();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object restoredState = ois.readObject();
+        oos.close();
+        ois.close();
+        
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
+        facesContext.setViewRoot(new UIViewRoot());
+        root = facesContext.getViewRoot();
+        createSimpleTable(root);
+        table = (UIData) root.getChildren().get(0);
+        column = (UIColumn) table.getChildren().get(0);
+        text = (UIInput) column.getChildren().get(0);
+        
+        table.restoreState(facesContext, restoredState);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
+            //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+    }
+    
+    // -------------------------------------------------------------------------
+    // Stateful (EVH) flat-list save / restore — UIData-specific
+    // -------------------------------------------------------------------------
+
+    /**
+     * Core correctness test for the flat-list stateful path in UIData.
+     *
+     * <p>UIData → UIColumn → UIInput. Sets a per-row submitted value, then revisits each row
+     * and verifies the saved state is correctly restored via
+     * {@code saveChildStates} / {@code restoreChildStates}.
+     */
+    @Test
+    public void testStatefulRowStateIsPreservedOnRevisit()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("a", "b", "c"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        column.getChildren().add(input);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // First pass: visit every row and set a per-row submitted value.
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            input.setSubmittedValue("submitted_" + i);
+        }
+        table.setRowIndex(-1);
+
+        // Second pass: revisit rows and verify the submitted values were preserved.
+        for (int i = 0; i < 3; i++)
+        {
+            table.setRowIndex(i);
+            Assertions.assertEquals("submitted_" + i, input.getSubmittedValue(),
+                    "Row " + i + ": submitted value should be restored from Integer row-index-keyed _rowStates");
+        }
+        table.setRowIndex(-1);
+    }
+
+    /**
+     * After visiting rows with state, moving to index -1 must reset all EVH
+     * components to their initial (empty) state.
+     */
+    @Test
+    public void testStatefulResetToInitialStateAtIndexMinusOne()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("a", "b"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        column.getChildren().add(input);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        table.setRowIndex(0);
+        input.setSubmittedValue("dirty");
+        table.setRowIndex(1);
+        input.setSubmittedValue("also_dirty");
+
+        // Reset to -1: components must be in their clean template state.
+        table.setRowIndex(-1);
+        Assertions.assertNull(input.getSubmittedValue(),
+                "After reset to -1, submitted value must be cleared to initial state");
+        Assertions.assertTrue(input.isValid(),
+                "After reset to -1, valid flag must be restored to true");
+    }
+
+    /**
+     * Multiple UIColumn/UIInput siblings must each have independent per-row state.
+     */
+    @Test
+    public void testStatefulMultipleEVHColumnsHaveIndependentState()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y"));
+
+        UIColumn colA = new UIColumn();
+        colA.setId("colA");
+        UIInput inputA = new UIInput();
+        inputA.setId("a");
+        colA.getChildren().add(inputA);
+
+        UIColumn colB = new UIColumn();
+        colB.setId("colB");
+        UIInput inputB = new UIInput();
+        inputB.setId("b");
+        colB.getChildren().add(inputB);
+
+        table.getChildren().add(colA);
+        table.getChildren().add(colB);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        table.setRowIndex(0);
+        inputA.setSubmittedValue("a0");
+        inputB.setSubmittedValue("b0");
+
+        table.setRowIndex(1);
+        inputA.setSubmittedValue("a1");
+        inputB.setSubmittedValue("b1");
+
+        table.setRowIndex(-1);
+
+        // Revisit row 0 — both inputs must have their row-0 values.
+        table.setRowIndex(0);
+        Assertions.assertEquals("a0", inputA.getSubmittedValue());
+        Assertions.assertEquals("b0", inputB.getSubmittedValue());
+
+        // Revisit row 1 — both inputs must have their row-1 values.
+        table.setRowIndex(1);
+        Assertions.assertEquals("a1", inputA.getSubmittedValue());
+        Assertions.assertEquals("b1", inputB.getSubmittedValue());
+    }
+
+    /**
+     * UIInput nested two levels deep (UIColumn → UIPanel → UIInput) must still be
+     * found in {@code _iterationEVHList} via depth-first traversal.
+     */
+    @Test
+    public void testStatefulNestedEVHStateIsPreserved()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIOutput panel = new UIOutput();
+        panel.setId("panel");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        panel.getChildren().add(input);
+        column.getChildren().add(panel);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        table.setRowIndex(0);
+        input.setSubmittedValue("nested_0");
+
+        table.setRowIndex(1);
+        input.setSubmittedValue("nested_1");
+
+        table.setRowIndex(-1);
+
+        table.setRowIndex(0);
+        Assertions.assertEquals("nested_0", input.getSubmittedValue(),
+                "Nested UIInput row-0 state must be restored");
+
+        table.setRowIndex(1);
+        Assertions.assertEquals("nested_1", input.getSubmittedValue(),
+                "Nested UIInput row-1 state must be restored");
+    }
+
+    /**
+     * A UIData nested inside another UIData keeps its per-row state per enclosing row: the inner table's row 0 in
+     * outer row 0 is a different cell from the inner table's row 0 in outer row 1. Keying the inner table's state by
+     * its own row index alone lets each enclosing row overwrite the previous one, which silently drops the submitted
+     * values of every enclosing row but the last.
+     */
+    @Test
+    public void testNestedTableRowStateIsScopedPerOuterRow()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+
+        UIData outer = new UIData();
+        outer.setId("outer");
+        outer.setVar("group");
+        outer.setValue(java.util.Arrays.asList("g0", "g1"));
+
+        UIColumn outerColumn = new UIColumn();
+        outerColumn.setId("outerCol");
+
+        UIData inner = new UIData();
+        inner.setId("inner");
+        inner.setVar("row");
+        inner.setValue(java.util.Arrays.asList("r0", "r1"));
+
+        UIColumn innerColumn = new UIColumn();
+        innerColumn.setId("innerCol");
+        UIInput input = new UIInput();
+        input.setId("inp");
+
+        innerColumn.getChildren().add(input);
+        inner.getChildren().add(innerColumn);
+        outerColumn.getChildren().add(inner);
+        outer.getChildren().add(outerColumn);
+        root.getChildren().add(outer);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // Submit a distinct value into every cell of the 2x2 grid.
+        for (int outerRow = 0; outerRow < 2; outerRow++)
+        {
+            outer.setRowIndex(outerRow);
+            for (int innerRow = 0; innerRow < 2; innerRow++)
+            {
+                inner.setRowIndex(innerRow);
+                input.setSubmittedValue("v" + outerRow + innerRow);
+            }
+            inner.setRowIndex(-1);
+        }
+        outer.setRowIndex(-1);
+
+        // Every cell must still hold its own value.
+        for (int outerRow = 0; outerRow < 2; outerRow++)
+        {
+            outer.setRowIndex(outerRow);
+            for (int innerRow = 0; innerRow < 2; innerRow++)
+            {
+                inner.setRowIndex(innerRow);
+                Assertions.assertEquals("v" + outerRow + innerRow, input.getSubmittedValue(),
+                        "outer row " + outerRow + ", inner row " + innerRow
+                                + " must keep the value submitted into it");
+            }
+            inner.setRowIndex(-1);
+        }
+        outer.setRowIndex(-1);
+    }
+
+    // -------------------------------------------------------------------------
+    // Read-only (no EVH) flat-list clientId reset
+    // -------------------------------------------------------------------------
+
+    /**
+     * For a read-only table (UIColumn → UIOutput only), {@code setRowIndex} must
+     * reset clientIds correctly so each row produces unique clientIds.
+     */
+    @Test
+    public void testReadOnlyClientIdResetPerRow()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y", "z"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIOutput out = new UIOutput();
+        out.setId("out");
+        column.getChildren().add(out);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        table.setRowIndex(0);
+        String clientId0 = out.getClientId(facesContext);
+
+        table.setRowIndex(1);
+        String clientId1 = out.getClientId(facesContext);
+
+        table.setRowIndex(2);
+        String clientId2 = out.getClientId(facesContext);
+
+        Assertions.assertNotEquals(clientId0, clientId1, "ClientIds must differ between rows");
+        Assertions.assertNotEquals(clientId1, clientId2, "ClientIds must differ between rows");
+
+        // After resetting, the IDs must match the first pass.
+        table.setRowIndex(-1);
+        table.setRowIndex(0);
+        Assertions.assertEquals(clientId0, out.getClientId(facesContext),
+                "ClientId for row 0 must be stable across iteration sequences");
+    }
+
+    /**
+     * Transient components must also have their clientId reset even though their
+     * state is not saved ({@code _iterationResetList} includes them).
+     */
+    @Test
+    public void testReadOnlyTransientComponentClientIdIsReset()
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("x", "y"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIOutput transientOut = new UIOutput();
+        transientOut.setId("tout");
+        transientOut.setTransient(true);
+        column.getChildren().add(transientOut);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        table.setRowIndex(0);
+        String id0 = transientOut.getClientId(facesContext);
+
+        table.setRowIndex(1);
+        String id1 = transientOut.getClientId(facesContext);
+
+        Assertions.assertNotEquals(id0, id1,
+                "Transient component clientId must be reset per row");
+    }
+
+    // -------------------------------------------------------------------------
+    // Iteration list lifecycle
+    // -------------------------------------------------------------------------
+
+    /**
+     * After {@code encodeBegin} the iteration lists are cleared.  A subsequent
+     * iteration sequence must still work correctly (no NPE, correct clientIds).
+     */
+    @Test
+    public void testIterationListsAreRebuiltAfterEncodeBegin() throws Exception
+    {
+        UIViewRoot root = facesContext.getViewRoot();
+        root.setRenderKitId("HTML_BASIC");
+        UIData table = new UIData();
+        table.setId("table");
+        table.setValue(java.util.Arrays.asList("a", "b"));
+
+        UIColumn column = new UIColumn();
+        column.setId("col");
+        UIInput input = new UIInput();
+        input.setId("inp");
+        column.getChildren().add(input);
+        table.getChildren().add(column);
+        root.getChildren().add(table);
+
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+
+        // First iteration sequence (simulates APPLY_REQUEST_VALUES)
+        table.setRowIndex(0);
+        input.setSubmittedValue("v0");
+        table.setRowIndex(1);
+        input.setSubmittedValue("v1");
+        table.setRowIndex(-1);
+
+        // encodeBegin clears the iteration lists and _rowStates
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        table.encodeBegin(facesContext);
+
+        // Second iteration sequence (simulates RENDER_RESPONSE row walk)
+        // must rebuild lists without NPE and show clean initial state
+        table.setRowIndex(0);
+        Assertions.assertNull(input.getSubmittedValue(),
+                "After encodeBegin, _rowStates is cleared and initial state is clean");
+
+        table.setRowIndex(1);
+        Assertions.assertNull(input.getSubmittedValue());
+
+        table.setRowIndex(-1);
+    }
+
+    private void createSimpleTable(UIViewRoot root)
+    {
+        createSimpleTable(root, false);
+    }
+    
+    private void createSimpleTable(UIViewRoot root, boolean rowStatePreserved)
+    {
+        UIData table = new UIData();
+        UIColumn column = new UIColumn();
+        UIInput text = new UIInput();
+        
+        //This is only required if markInitiaState fix is not used 
+        root.setId(root.createUniqueId());
+        table.setId(root.createUniqueId());
+        column.setId(root.createUniqueId());
+        text.setId(root.createUniqueId());
+        
+        table.setVar("row");
+        if (rowStatePreserved)
+        {
+            table.setRowStatePreserved(true);
+        }
+        table.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{list}",List.class));
+        
+        text.setValueExpression("value", application.
+                getExpressionFactory().createValueExpression(
+                        facesContext.getELContext(),"#{row.text}",String.class));
+        
+        root.getChildren().add(table);
+        table.getChildren().add(column);
+        column.getChildren().add(text);
+    }
+    
+    /**
+     * Test state save and restore cycle taking in consideration portlet case.
+     * 
+     * In portlets, saveState() could be called on INVOKE_APPLICATION phase and
+     * restoreState() could be called in RENDER_RESPONSE phase.
+     * 
+     * This test is active when PSS is enabled.
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testSaveAndRestorePortletLifecycleWithPss1() throws Exception
+    {
+        facesContext.getRenderKit().addRenderer("jakarta.faces.Data", "jakarta.faces.Table",new Renderer(){});
+        
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text2","style2"));
+        model.add(new RowData("text3","style3"));
+        model.add(new RowData("text4","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        createSimpleTable(root);
+        UIData table = (UIData) root.getChildren().get(0);
+        UIColumn column = (UIColumn) table.getChildren().get(0);
+        UIInput text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals(rowData.getText(), text.getValue());
+            text.setSubmittedValue("value"+(i+1));
+            //text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+        
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        
+        Object state = table.saveState(facesContext);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(state);
+        oos.flush();
+        baos.flush();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object restoredState = ois.readObject();
+        oos.close();
+        ois.close();
+        
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
+        facesContext.setViewRoot(new UIViewRoot());
+        root = facesContext.getViewRoot();
+        root.setRenderKitId("HTML_BASIC");
+        
+        createSimpleTable(root);
+        table = (UIData) root.getChildren().get(0);
+        column = (UIColumn) table.getChildren().get(0);
+        text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        table.restoreState(facesContext, restoredState);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
+            //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+        
+    }
+    
+    /**
+     * Test state save and restore cycle taking in consideration portlet case.
+     * 
+     * In portlets, saveState() could be called on INVOKE_APPLICATION phase and
+     * restoreState() could be called in RENDER_RESPONSE phase.
+     * 
+     * This test is active when PSS is enabled.
+     * 
+     * @throws Exception 
+     */
+    @Test
+    public void testSaveAndRestorePortletLifecycleWithPss2() throws Exception
+    {
+        facesContext.getRenderKit().addRenderer("jakarta.faces.Data", "jakarta.faces.Table",new Renderer(){});
+        
+        List<RowData> model = new ArrayList<RowData>();
+        model.add(new RowData("text1","style1"));
+        model.add(new RowData("text2","style2"));
+        model.add(new RowData("text3","style3"));
+        model.add(new RowData("text4","style4"));
+        
+        //Put on request map to be resolved later
+        request.setAttribute("list", model);
+        
+        UIViewRoot root = facesContext.getViewRoot();
+        createSimpleTable(root, true);
+        UIData table = (UIData) root.getChildren().get(0);
+        UIColumn column = (UIColumn) table.getChildren().get(0);
+        UIInput text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        facesContext.setCurrentPhaseId(PhaseId.APPLY_REQUEST_VALUES);
+        
+        //Check the value expressions are working and change the component state 
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals(rowData.getText(), text.getValue());
+            text.setSubmittedValue("value"+(i+1));
+            text.getTransientStateHelper().putTransient("key", "value"+(i+1));
+            //text.getAttributes().put("style", rowData.getStyle());
+        }
+        
+        //Reset row index
+        table.setRowIndex(-1);
+        
+        facesContext.setCurrentPhaseId(PhaseId.INVOKE_APPLICATION);
+        
+        Object state = table.saveState(facesContext);
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(state);
+        oos.flush();
+        baos.flush();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object restoredState = ois.readObject();
+        oos.close();
+        ois.close();
+        
+        facesContext.setCurrentPhaseId(PhaseId.RENDER_RESPONSE);
+        
+        facesContext.setViewRoot(new UIViewRoot());
+        root = facesContext.getViewRoot();
+        root.setRenderKitId("HTML_BASIC");
+        
+        createSimpleTable(root, true);
+        table = (UIData) root.getChildren().get(0);
+        column = (UIColumn) table.getChildren().get(0);
+        text = (UIInput) column.getChildren().get(0);
+        
+        //Simulate markInitialState call.
+        facesContext.getAttributes().put(StateManager.IS_BUILDING_INITIAL_STATE, Boolean.TRUE);
+        root.markInitialState();
+        table.markInitialState();
+        column.markInitialState();
+        text.markInitialState();
+        facesContext.getAttributes().remove(StateManager.IS_BUILDING_INITIAL_STATE);        
+        
+        table.restoreState(facesContext, restoredState);
+
+        //Check the values were not lost
+        for (int i = 0; i < model.size(); i++)
+        {
+            RowData rowData = model.get(i); 
+            table.setRowIndex(i);
+            Assertions.assertEquals("value"+(i+1), text.getSubmittedValue());
+            Assertions.assertEquals("value"+(i+1), text.getTransientStateHelper().getTransient("key"));
+            //assertEquals(model.get(i).getStyle(), text.getAttributes().get("style"));
+        }
+        
+    }
+
+}
